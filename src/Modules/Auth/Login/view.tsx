@@ -13,7 +13,7 @@ export const View = (props: IFormModel) => (
                     <Button variant="contained" type="submit" sx={{ marginTop: 4 }}>Sign In</Button>
                 </FormControl>
             </form>
-            <Typography variant="h6" sx={{ color: "#1976d2" }}>Don't have an account?<Link to={props.signup_path}>Sign up</Link></Typography>
+            <Typography variant="h6" sx={{ color: "#1976d2"}}>Don't have an account?<Link to={props.signup_path}>Sign up</Link></Typography>
         </Box>
     </Box>
 )
