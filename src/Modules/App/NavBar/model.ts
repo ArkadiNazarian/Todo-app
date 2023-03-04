@@ -1,4 +1,10 @@
 export interface IFormModel {
-    name?:string;
-    toggle_menu:()=>void;
+    name?: string;
+    toggle_menu: () => void;
+    handler_onView_account: () => void;
+    view_account: boolean;
+    user_info: {
+        full_name?: string;
+        email?: string;
+    }
 }
