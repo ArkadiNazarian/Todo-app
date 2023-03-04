@@ -1,14 +1,15 @@
 import { Box } from "@mui/system";
-import { HiOutlineMenu } from "react-icons/hi";
-import { AiOutlineHome } from "react-icons/ai";
 import { Avatar, Paper, Typography } from "@mui/material";
 import { IFormModel } from "./model";
+import MenuIcon from '@mui/icons-material/Menu';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 
 export const View = (props: IFormModel) => (
     <Box sx={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between", backgroundColor: "#0372ad", paddingTop: 1, paddingBottom: 1, alignItems: 'center' }}>
         <Box sx={{ fontSize: "1.5rem", color: "#ffffff", paddingLeft: 2 }}>
-            <HiOutlineMenu onClick={() => props.toggle_menu()} />
-            <AiOutlineHome style={{ paddingLeft: "1rem" }} />
+            <MenuIcon onClick={() => props.toggle_menu()} />
+            <HomeOutlinedIcon sx={{ paddingLeft: "1rem" }} />
         </Box>
         <Box sx={{ paddingRight: 3, position: "relative" }}>
             <Avatar onClick={() => props.handler_onView_account()} sx={{ width: 34, height: 34, cursor: "pointer" }}>{props.name}</Avatar>
@@ -20,6 +21,10 @@ export const View = (props: IFormModel) => (
                             <Typography>{props.user_info.full_name}</Typography>
                             <Typography color={"#00000055"}>{props.user_info.email}</Typography>
                         </Box>
+                    </Box>
+                    <Box onClick={()=>props.action_signout()} sx={{ display: "flex", flexDirection: "row", alignItems: "center", marginTop: 40,cursor:"pointer" }} >
+                        <LogoutOutlinedIcon />
+                        <Typography fontSize={15}>Log out</Typography>
                     </Box>
                 </Paper>
             }
