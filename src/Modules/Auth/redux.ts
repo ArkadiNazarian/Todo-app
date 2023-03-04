@@ -39,7 +39,6 @@ export const account_slice = createSlice({
         },
         sign_out: (state) => {
             state.token = ""
-            // state.user={}
         },
     },
     extraReducers: (builder) => {
