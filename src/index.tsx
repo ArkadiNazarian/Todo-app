@@ -8,6 +8,8 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { store } from './Redux/store';
 import { persistStore } from 'redux-persist';
 import { ToastContainer } from 'react-toastify';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 export const persistor = persistStore(store);
 
@@ -17,8 +19,10 @@ const root = ReactDOM.createRoot(
 root.render(
   <Provider store={store}>
     <PersistGate persistor={persistor}>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
         <App />
-        <ToastContainer/>
+      </LocalizationProvider>
+      <ToastContainer />
     </PersistGate>
   </Provider>
 );
