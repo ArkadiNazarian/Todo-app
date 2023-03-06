@@ -19,18 +19,11 @@ export const View = (props: IFormModel) => (
                     <FormGroup>
                         <TextField type="text" placeholder="Task name" variant="standard" name="task_title" value={props.form_data.task_title} onChange={props.handleChange} onBlur={props.handleBlur} />
                         <TextField type="text" sx={{ marginTop: 2 }} placeholder="Description" variant="standard" name="description" value={props.form_data.description} onChange={props.handleChange} onBlur={props.handleBlur} />
-                        <DatePicker label="Date" sx={{ marginTop: 5, width: 200 }} value={props.form_data.date} onChange={(value) => props.setFieldValue('date', value)} />
+                        <DatePicker label="Due date" sx={{ marginTop: 5, width: 200 }} value={props.form_data.due_date} onChange={(value) => props.setFieldValue('due_date', value)} />
                     </FormGroup>
                     <FormControl sx={{ marginTop: 3, minWidth: 120 }}>
                         <InputLabel id="demo-simple-select-label">Priority</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={props.form_data.priority}
-                            label="Priority"
-                            onChange={props.handleChange}
-                            name="priority"
-                        >
+                        <Select labelId="demo-simple-select-label" id="demo-simple-select" value={props.form_data.priority} label="Priority" onChange={props.handleChange} name="priority" >
                             <MenuItem value={1}><FlagIcon sx={{ color: "#bd0416" }} />Priority 1</MenuItem>
                             <MenuItem value={2}><FlagIcon sx={{ color: "#f57c02" }} />Priority 2</MenuItem>
                             <MenuItem value={3}><FlagIcon sx={{ color: "#0356fc" }} />Priority 3</MenuItem>

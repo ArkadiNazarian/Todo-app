@@ -4,7 +4,7 @@ import { FormikErrors } from "formik";
 export interface IModel {
     task_title: string;
     description: string;
-    date: Dayjs | null;
+    due_date: Dayjs | null;
     priority: number;
 }
 
