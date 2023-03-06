@@ -5,6 +5,7 @@ export interface IModel {
     task_title: string;
     description: string;
     date: Dayjs | null;
+    priority: number;
 }
 
 export interface IFormModel {

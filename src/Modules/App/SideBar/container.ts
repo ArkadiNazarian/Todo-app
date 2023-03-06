@@ -14,7 +14,8 @@ export const useContainer = (): IFormModel => {
     const initial_values: IModel = {
         task_title: "",
         description: "",
-        date: null
+        date: null,
+        priority:4
     };
 
     const handler_open_modal = () => {
@@ -27,7 +28,7 @@ export const useContainer = (): IFormModel => {
 
     const action_submit = (values: IModel) => {
         console.log(values.date?.format("DD-MM-YYYY"))
-        formik.setValues({ date: null, description: "", task_title: "" })
+console.log(values)
     }
 
     const formik = useFormik({
