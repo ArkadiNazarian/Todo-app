@@ -2,18 +2,29 @@ import { useState } from "react"
 import { IFormModel, IProjectModel, ITaskModel } from "./model";
 import *as yup from 'yup';
 import { useFormik } from "formik";
-import { addDoc, collection, onSnapshot } from "firebase/firestore";
+import { addDoc, collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "../../../Firebase/firbase-config";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
+import { getAccountSelector } from "../../Auth/redux";
+import { useNavigate } from "react-router-dom";
+import { route_names } from "../../../Routes/route-name";
 
 export const useContainer = (): IFormModel => {
 
-    const task_collection = collection(db, "tasks");
-    const project_collection = collection(db, "project");
+    const user_data = useSelector(getAccountSelector);
+    const navigate = useNavigate();
+    const app_routes = route_names();
+
+    const add_task_collection = collection(db, "tasks");
+    const get_project_collection = query(collection(db, "project"), where("user_id", "==", user_data.token));
+    const add_project_collection = collection(db, "project");
 
     const [open_task_modal, set_open_task_modal] = useState(false);
     const [open_project_modal, set_open_project_modal] = useState(false);
     const [project_list, set_project_list] = useState<Array<{ id: string, color: string, project_title: string }>>([]);
+    const [on_today, set_on_today] = useState(true);
+    const [on_inbox, set_on_inbox] = useState(false);
 
     const task_validation_schema = yup.object().shape({
         task_title: yup.string().required(),
@@ -34,7 +45,8 @@ export const useContainer = (): IFormModel => {
         task_title: "",
         description: "",
         due_date: null,
-        priority: 4
+        priority: 4,
+        project_id: ""
     };
 
     const handler_open_task_modal = () => {
@@ -47,7 +59,7 @@ export const useContainer = (): IFormModel => {
 
     const handler_close_task_modal = () => {
         set_open_task_modal(false);
-        task_formik.setValues({ description: "", due_date: null, priority: 4, task_title: ""});
+        task_formik.setValues({ description: "", due_date: null, priority: 4, task_title: "" });
     }
 
     const handler_close_project_modal = () => {
@@ -56,18 +68,19 @@ export const useContainer = (): IFormModel => {
     }
 
     const action_add_task = (values: ITaskModel) => {
-        addDoc(task_collection, {
+        addDoc(add_task_collection, {
             task_title: values.task_title,
             description: values.description,
             due_date: values.due_date?.format("DD-MM-YYYY"),
-            priority: values.priority
+            priority: values.priority,
+            user_id: user_data.token
         })
             .then(() => {
                 handler_close_task_modal();
                 toast.success("Task was added successfully", {
                     position: toast.POSITION.TOP_RIGHT
                 })
-                task_formik.setValues({ description: "", due_date: null, priority: 4, task_title: ""});
+                task_formik.setValues({ description: "", due_date: null, priority: 4, task_title: "" });
             })
             .catch((command_result) => {
                 handler_close_task_modal();
@@ -78,9 +91,10 @@ export const useContainer = (): IFormModel => {
     }
 
     const action_add_project = (values: IProjectModel) => {
-        addDoc(project_collection, {
+        addDoc(add_project_collection, {
             project_title: values.project_title,
-            color: values.color
+            color: values.color,
+            user_id: user_data.token
         })
             .then(() => {
                 handler_close_project_modal();
@@ -109,9 +123,21 @@ export const useContainer = (): IFormModel => {
         onSubmit: action_add_project
     });
 
-    onSnapshot(project_collection, (snapshot) => {
+    const goto_today = () => {
+        set_on_today(true);
+        set_on_inbox(false);
+        navigate(app_routes.today_path);
+    }
+
+    const goto_inbox = () => {
+        set_on_inbox(true);
+        set_on_today(false);
+        navigate(app_routes.inbox_path);
+    }
+
+    onSnapshot(get_project_collection, (snapshot) => {
         const array = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })) as Array<{ id: string, color: string, project_title: string }>
-        set_project_list(array)
+        set_project_list(array);
     })
 
     return {
@@ -135,7 +161,11 @@ export const useContainer = (): IFormModel => {
             handleBlur: project_formik.handleBlur,
             setFieldValue: project_formik.setFieldValue
         },
-        project_list
+        project_list,
+        goto_today,
+        goto_inbox,
+        on_today,
+        on_inbox
 
     }
 }

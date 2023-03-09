@@ -35,6 +35,9 @@ export interface IFormModel {
         project_form_data: IProjectModel;
         setFieldValue: (field: string, value: any, shouldValidate?: boolean | undefined) => Promise<void> | Promise<FormikErrors<IProjectModel>>;
     };
-    project_list: Array<{ id: string; project_title: string; color: string; }>
-
+    project_list: Array<{ id: string; project_title: string; color: string; }>;
+    goto_today: () => void;
+    goto_inbox: () => void;
+    on_today: boolean;
+    on_inbox: boolean;
 }
