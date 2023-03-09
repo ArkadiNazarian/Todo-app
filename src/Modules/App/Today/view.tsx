@@ -7,6 +7,7 @@ export const View=()=>(
         <NavBar/>
         <Box>
             <SideBar/>
+            barev
         </Box>
     </Box>
 )

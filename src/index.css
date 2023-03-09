@@ -11,3 +11,14 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
+  display: flex !important;
+  flex-direction: row;
+  align-items: center;
+}
+
+.css-6hp17o-MuiList-root-MuiMenu-list{
+  overflow-y: auto;
+  max-height: 200px;
+}
