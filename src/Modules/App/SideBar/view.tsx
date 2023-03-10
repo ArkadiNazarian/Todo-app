@@ -7,6 +7,7 @@ import { IFormModel } from "./model";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import FormGroup from "@mui/material/FormGroup";
 import FlagIcon from '@mui/icons-material/Flag';
+import * as enums from "../../../Enums/enums";
 
 export const View = (props: IFormModel) => (
     <Box sx={{ background: "#0000001a", width: "16rem", paddingLeft: 3, paddingRight: 3, paddingTop: 5, minHeight: "50vh" }}>
@@ -24,10 +25,10 @@ export const View = (props: IFormModel) => (
                     <FormControl sx={{ marginTop: 3, minWidth: 120 }}>
                         <InputLabel>Priority</InputLabel>
                         <Select value={props.task.task_form_data.priority} label="Priority" onChange={props.task.handleChange} name="priority" >
-                            <MenuItem value={1}><FlagIcon sx={{ color: "#bd0416" }} />Priority 1</MenuItem>
-                            <MenuItem value={2}><FlagIcon sx={{ color: "#f57c02" }} />Priority 2</MenuItem>
-                            <MenuItem value={3}><FlagIcon sx={{ color: "#0356fc" }} />Priority 3</MenuItem>
-                            <MenuItem value={4}><FlagIcon sx={{ color: "#cfcfcf" }} />Priority 4</MenuItem>
+                            <MenuItem value={enums.Priority.Red}><FlagIcon sx={{ color: "#bd0416" }} />Priority 1</MenuItem>
+                            <MenuItem value={enums.Priority.Orange}><FlagIcon sx={{ color: "#f57c02" }} />Priority 2</MenuItem>
+                            <MenuItem value={enums.Priority.Blue}><FlagIcon sx={{ color: "#0356fc" }} />Priority 3</MenuItem>
+                            <MenuItem value={enums.Priority.White}><FlagIcon sx={{ color: "#cfcfcf" }} />Priority 4</MenuItem>
                         </Select>
                     </FormControl>
                     <FormControl sx={{ marginTop: 3, minWidth: 120 }}>

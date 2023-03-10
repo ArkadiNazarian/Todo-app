@@ -3,5 +3,5 @@ import { View } from "./view"
 
 export const Today = () => {
     const props = useContainer();
-    return <View/>
+    return <View {...props}/>
 }

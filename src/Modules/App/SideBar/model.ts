@@ -1,11 +1,12 @@
 import { Dayjs } from "dayjs";
 import { FormikErrors } from "formik";
+import * as enums from "../../../Enums/enums";
 
 export interface ITaskModel {
     task_title: string;
     description: string;
     due_date: Dayjs | null;
-    priority: number;
+    priority: enums.Priority;
     project_id?: string;
 }
 
