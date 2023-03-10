@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { getAccountSelector } from "../../Auth/redux";
 import { useNavigate } from "react-router-dom";
 import { route_names } from "../../../Routes/route-name";
+import * as enums from "../../../Enums/enums";
 
 export const useContainer = (): IFormModel => {
 
@@ -45,7 +46,7 @@ export const useContainer = (): IFormModel => {
         task_title: "",
         description: "",
         due_date: null,
-        priority: 4,
+        priority: enums.Priority.White,
         project_id: ""
     };
 
@@ -136,7 +137,7 @@ export const useContainer = (): IFormModel => {
     }
 
     onSnapshot(get_project_collection, (snapshot) => {
-        const array = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })) as Array<{ id: string, color: string, project_title: string }>
+        const array = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })) as Array<{ id: string, color: string, project_title: string }>;
         set_project_list(array);
     })
 
