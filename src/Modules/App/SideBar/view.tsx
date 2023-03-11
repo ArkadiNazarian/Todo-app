@@ -10,7 +10,7 @@ import FlagIcon from '@mui/icons-material/Flag';
 import * as enums from "../../../Enums/enums";
 
 export const View = (props: IFormModel) => (
-    <Box sx={{ background: "#0000001a", width: "16rem", paddingLeft: 3, paddingRight: 3, paddingTop: 5, minHeight: "50vh" }}>
+    <Box sx={{ background: "#0000001a", width: "16rem", paddingLeft: 3, paddingRight: 3, paddingTop: 5, minHeight: "50vh",borderRadius:"0px 0px 6px 0px" }}>
         <Typography onClick={() => props.goto_inbox()} sx={{ ':hover': { background: "#00000033", cursor: "pointer" }, background: props.on_inbox ? "#00000033" : "", fontWeight: 'light', paddingLeft: 1, marginBottom: 1, borderRadius: 1, height: 1, display: "flex", alignItems: "center" }}><InboxOutlinedIcon sx={{ color: "#0372ad", marginRight: "8px", fontSize: 20 }} />Inbox</Typography>
         <Typography onClick={() => props.goto_today()} sx={{ ':hover': { background: "#00000033", cursor: "pointer" }, background: props.on_today ? "#00000033" : "", fontWeight: 'light', paddingLeft: 1, marginBottom: 1, borderRadius: 1, height: 1, display: "flex", alignItems: "center" }}><CalendarMonthOutlinedIcon sx={{ color: "#058527", marginRight: "8px", fontSize: 20 }} />Today</Typography>
         <Button onClick={() => props.task.handler_open_task_modal()}>Add task</Button>

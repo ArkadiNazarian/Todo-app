@@ -1,7 +1,6 @@
 import { route_names } from "./route-name";
 import { SignUp } from "../Modules/Auth/Signup";
 import { Login } from "../Modules/Auth/Login";
-import { NavBar } from "../Modules/App/NavBar";
 import { Today } from "../Modules/App/Today";
 
 export const routes = () => {

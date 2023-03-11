@@ -60,7 +60,7 @@ export const useContainer = (): IFormModel => {
 
     const handler_close_task_modal = () => {
         set_open_task_modal(false);
-        task_formik.setValues({ description: "", due_date: null, priority: 4, task_title: "" });
+        task_formik.setValues({ description: "", due_date: null, priority: enums.Priority.White, task_title: "" ,project_id: ""});
     }
 
     const handler_close_project_modal = () => {
@@ -74,14 +74,15 @@ export const useContainer = (): IFormModel => {
             description: values.description,
             due_date: values.due_date?.format("DD-MM-YYYY"),
             priority: values.priority,
-            user_id: user_data.token
+            user_id: user_data.token,
+            project_id:values.project_id
         })
             .then(() => {
                 handler_close_task_modal();
                 toast.success("Task was added successfully", {
                     position: toast.POSITION.TOP_RIGHT
                 })
-                task_formik.setValues({ description: "", due_date: null, priority: 4, task_title: "" });
+                task_formik.setValues({ description: "", due_date: null, priority: enums.Priority.White, task_title: "",project_id: "" });
             })
             .catch((command_result) => {
                 handler_close_task_modal();
