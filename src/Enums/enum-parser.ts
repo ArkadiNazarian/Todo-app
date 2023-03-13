@@ -66,3 +66,18 @@ export const getPriorityColor=(value: number)=>{
             break;
     }
 }
+
+export const getPriorityTitle=(value: number)=>{
+    switch (value) {
+        case enums.Priority.Red:
+            return "P1";
+        case enums.Priority.Orange:
+            return "P2";
+        case enums.Priority.Blue:
+            return "P3";
+        case enums.Priority.White:
+            return "P4";
+        default:
+            break;
+    }
+}

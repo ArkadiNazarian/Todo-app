@@ -1,12 +1,15 @@
-import { Modal, Typography } from "@mui/material";
+import { FormControl, Modal, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { NavBar } from "../NavBar";
 import { SideBar } from "../SideBar";
 import { IFormModel } from "./model";
 import { getPriorityColor } from "../../../Enums/enum-parser";
+
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import SortIcon from '@mui/icons-material/Sort';
+import InsertInvitationOutlinedIcon from '@mui/icons-material/InsertInvitationOutlined';
+import FlagIcon from '@mui/icons-material/Flag';
 
 export const View = (props: IFormModel) => (
     <Box>
@@ -39,7 +42,7 @@ export const View = (props: IFormModel) => (
         </Box>
         <Modal open={props.open_task_modal} onClose={() => props.handler_close_task_modal()}>
             <Box sx={{ position: "absolute", top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 800, height: "80%", borderRadius: 2, boxShadow: 24, p: 4, background: "#ffffff" }}>
-                <Box sx={{ borderBottom: 1, paddingBottom: 2, borderColor: "#00000033", display: "flex", justifyContent: "space-between" }}>
+                <Box sx={{ borderBottom: 1, paddingBottom: 2, borderColor: "#00000033", display: "flex", justifyContent: "space-between" }} >
                     <Typography fontSize={15} color="#00000099" sx={{ display: "flex", alignItems: "center", }}><CalendarMonthOutlinedIcon sx={{ color: "#058527", marginRight: "8px", fontSize: 20 }} />Today</Typography>
                     <CloseIcon onClick={() => props.handler_close_task_modal()} sx={{ ':hover': { cursor: "pointer", background: "#00000022", borderRadius: 1 } }} />
                 </Box>
@@ -47,23 +50,58 @@ export const View = (props: IFormModel) => (
                 <Box sx={{ display: "flex" }}>
                     <Box sx={{ marginTop: 4, width: 600 }}>
                         <Box sx={{ display: "flex", alignItems: "center" }}>
-                            <Box sx={{ width: "25px", height: "25px", borderRadius: 4, marginRight: 2, background: props.task_details?.priority }}></Box>
-                            <Typography fontSize={20}>{props.task_details?.task_title}</Typography>
+                            <Box sx={{ width: "25px", height: "25px", borderRadius: 4, marginRight: 2, background: props.task_details?.priority_color }}></Box>
+                            {
+                                props.edit.edit_title ?
+                                    <form onSubmit={props.action_submit}>
+                                        <FormControl >
+                                            <TextField label="Task name" variant="standard" name="task_title" value={props.form_data.task_title} onChange={props.handleChange} onBlur={() => props.action_submit()}></TextField>
+                                        </FormControl>
+                                    </form> :
+                                    <Typography fontSize={20} onClick={() => props.handler_onEdit_title()}>{props.task_details?.task_title}</Typography>
+                            }
+
                         </Box>
                         {
-                            props.task_details?.description === "" ? (
-                                <Box sx={{ display: "flex", alignItems: "center", marginTop: 2, marginLeft: 4 }} color="#00000044"><SortIcon sx={{ color: "#00000044" }} /><Typography>Description</Typography></Box>
-                            ) : (
-                                <Typography fontSize={15}>{props.task_details?.description}</Typography>
-                            )
+                            props.edit.edit_description ?
+                                <form onSubmit={props.action_submit}>
+                                    <FormControl >
+                                        <TextField label="Task name" variant="standard" name="description" value={props.form_data.description} onChange={props.handleChange} onBlur={() => props.action_submit()}></TextField>
+                                    </FormControl>
+                                </form> :
+                                props.task_details?.description === "" ? (
+                                    <Box sx={{ display: "flex", alignItems: "center", marginTop: 2, marginLeft: 4 }} color="#00000044" onClick={() => props.handler_onEdit_description()}><SortIcon sx={{ color: "#00000044" }} /><Typography>Description</Typography></Box>
+                                ) : (
+                                    <Typography fontSize={15} sx={{ marginTop: 2, marginLeft: 4 }} onClick={() => props.handler_onEdit_description()}>{props.task_details?.description}</Typography>
+                                )
                         }
-
                     </Box>
                     <Box sx={{ background: "#00000011", height: "60vh", width: 200, borderRadius: 2, marginTop: 4, padding: 2 }}>
                         <Typography fontSize={13} color="#00000099" fontWeight="bold">Project</Typography>
-                        <Box sx={{display:"flex",alignItems:"center"}}>
-                            <Box sx={{ width: "10px", height: "10px", borderRadius: 4, background: props.task_details?.priority }}></Box>
-                            <Typography>{props.task_details?.project_title}</Typography>
+                        <Box sx={{ display: "flex", alignItems: "center", marginTop: 1, borderBottom: 1, paddingBottom: 1, borderColor: "#00000022" }}>
+                            <Box sx={{ width: "10px", height: "10px", borderRadius: 4, background: props.task_details?.project_color, marginRight: 1 }}></Box>
+                            <Typography fontSize={12} color="#00000099">{props.task_details?.project_title}</Typography>
+                        </Box>
+                        <Typography fontSize={13} color="#00000099" fontWeight="bold" sx={{ marginTop: 1 }}>Due Date</Typography>
+                        <Box sx={{ borderBottom: 1, paddingBottom: 1, borderColor: "#00000022", marginTop: 1 }}>
+                            <Typography fontSize={12} color="#00000099" sx={{ display: "flex", alignItems: "center" }}><InsertInvitationOutlinedIcon fontSize="small" sx={{ color: "#058527", marginRight: 1 }} />Today</Typography>
+                        </Box>
+                        <Box onClick={() => props.handler_onEdit_priority()}>
+                            <Typography fontSize={13} color="#00000099" fontWeight="bold" sx={{ marginTop: 1 }}>Priority</Typography>
+                            <Box sx={{ borderBottom: 1, paddingBottom: 1, borderColor: "#00000022", marginTop: 1, position: "relative" }}>
+                                <Typography fontSize={12} color="#00000099" sx={{ display: "flex", alignItems: "center" }}><FlagIcon fontSize="small" sx={{ color: props.task_details?.priority_color, marginRight: 1 }} />{props.task_details?.priority_title}</Typography>
+                                {
+                                    props.edit.edit_priority &&
+                                    <Box sx={{ position: "absolute", background: "#ffffff", padding: 2, borderRadius: 2, left: 20, top: 30 }}>
+                                        {
+                                            props.priority_list.map((value, index) => (
+                                                <Typography onClick={() => props.handler_update_priority(value.value)} sx={{ cursor: "pointer" }} key={index}><FlagIcon sx={{ color: value.priority_color }} />{value.priority_title}</Typography>
+                                            ))
+                                        }
+
+                                    </Box>
+                                }
+                            </Box>
                         </Box>
                     </Box>
                 </Box>
