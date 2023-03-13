@@ -10,6 +10,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import SortIcon from '@mui/icons-material/Sort';
 import InsertInvitationOutlinedIcon from '@mui/icons-material/InsertInvitationOutlined';
 import FlagIcon from '@mui/icons-material/Flag';
+import { StaticDatePicker } from "@mui/x-date-pickers";
 
 export const View = (props: IFormModel) => (
     <Box>
@@ -84,7 +85,13 @@ export const View = (props: IFormModel) => (
                         </Box>
                         <Typography fontSize={13} color="#00000099" fontWeight="bold" sx={{ marginTop: 1 }}>Due Date</Typography>
                         <Box sx={{ borderBottom: 1, paddingBottom: 1, borderColor: "#00000022", marginTop: 1 }}>
-                            <Typography fontSize={12} color="#00000099" sx={{ display: "flex", alignItems: "center" }}><InsertInvitationOutlinedIcon fontSize="small" sx={{ color: "#058527", marginRight: 1 }} />Today</Typography>
+                            {
+                                props.edit.edit_due_date ? <form>
+                                    <FormControl>
+                                    <StaticDatePicker onClose={()=>props.handler_onEdit_due_date()} orientation="portrait" value={props.form_data.due} onChange={(value) => props.setFieldValue('due', value)} onAccept={props.action_submit}/></FormControl>
+                                    </form> : <Typography onClick={() => props.handler_onEdit_due_date()} fontSize={12} color="#00000099" sx={{ display: "flex", alignItems: "center" }}><InsertInvitationOutlinedIcon fontSize="small" sx={{ color: "#058527", marginRight: 1 }} />Today</Typography>
+                            }
+
                         </Box>
                         <Box onClick={() => props.handler_onEdit_priority()}>
                             <Typography fontSize={13} color="#00000099" fontWeight="bold" sx={{ marginTop: 1 }}>Priority</Typography>
@@ -95,7 +102,7 @@ export const View = (props: IFormModel) => (
                                     <Box sx={{ position: "absolute", background: "#ffffff", padding: 2, borderRadius: 2, left: 20, top: 30 }}>
                                         {
                                             props.priority_list.map((value, index) => (
-                                                <Typography onClick={() => props.handler_update_priority(value.value)} sx={{ cursor: "pointer" }} key={index}><FlagIcon sx={{ color: value.priority_color }} />{value.priority_title}</Typography>
+                                                <Typography onBlur={()=>{console.log("h")}} onClick={() => props.handler_update_priority(value.value)} sx={{ cursor: "pointer" }} key={index}><FlagIcon sx={{ color: value.priority_color }} />{value.priority_title}</Typography>
                                             ))
                                         }
 

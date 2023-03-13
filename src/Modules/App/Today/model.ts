@@ -1,3 +1,5 @@
+import { Dayjs } from "dayjs";
+import { FormikErrors } from "formik";
 import * as enums from "../../../Enums/enums";
 
 export interface ITaskModel {
@@ -19,13 +21,16 @@ export interface IFormModel {
     handler_onEdit_title: () => void;
     handler_onEdit_priority: () => void;
     handler_onEdit_description: () => void;
-    edit: { edit_title: boolean; edit_description: boolean; edit_priority: boolean };
+    edit: { edit_title: boolean; edit_description: boolean; edit_priority: boolean; edit_due_date: boolean; };
     action_submit: () => void;
     form_data: IModel;
     handleChange: (e: any) => void;
     handleBlur: (e: any) => void;
     priority_list: Array<{ priority_color: string; priority_title: string; value: enums.Priority }>;
     handler_update_priority: (value: enums.Priority) => void;
+    handler_onEdit_due_date: () => void;
+    ac:()=>void;
+    setFieldValue: (field: string, value: any, shouldValidate?: boolean | undefined) => Promise<void> | Promise<FormikErrors<ITaskModel>>;
 }
 
 export interface IModel {
@@ -34,6 +39,7 @@ export interface IModel {
     priority_color?: string;
     priority_title?: string;
     due_date?: string;
+    due: Dayjs | null;
     project_title?: string;
     project_color?: string;
     priority?: string
