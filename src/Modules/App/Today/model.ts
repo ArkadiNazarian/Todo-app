@@ -2,7 +2,7 @@ import { Dayjs } from "dayjs";
 import { FormikErrors } from "formik";
 import * as enums from "../../../Enums/enums";
 
-export interface ITaskModel {
+export interface IGetTaskModel {
     id: string;
     task_title: string;
     description: string;
@@ -11,9 +11,21 @@ export interface ITaskModel {
     project_id: string;
 }
 
+export interface ISetTaskModel {
+    task_title?: string;
+    description?: string;
+    priority_color?: string;
+    priority_title?: string;
+    due_date?: string;
+    edited_due_date: Dayjs | null;
+    project_title?: string;
+    project_color?: string;
+    priority?: string;
+}
+
 export interface IFormModel {
-    task_list: Array<ITaskModel>;
-    task_details?: IModel;
+    task_list: Array<IGetTaskModel>;
+    task_details?: ISetTaskModel;
     date?: { month: string; week_day: string; day: number };
     open_task_modal: boolean;
     handler_open_task_modal: (id: string) => void;
@@ -21,26 +33,37 @@ export interface IFormModel {
     handler_onEdit_title: () => void;
     handler_onEdit_priority: () => void;
     handler_onEdit_description: () => void;
-    edit: { edit_title: boolean; edit_description: boolean; edit_priority: boolean; edit_due_date: boolean; };
+    edit: IEditModel;
     action_submit: () => void;
-    form_data: IModel;
+    form_data: ISetTaskModel;
     handleChange: (e: any) => void;
     handleBlur: (e: any) => void;
     priority_list: Array<{ priority_color: string; priority_title: string; value: enums.Priority }>;
     handler_update_priority: (value: enums.Priority) => void;
+    handler_update_project: (project_id: string) => void;
     handler_onEdit_due_date: () => void;
-    ac:()=>void;
-    setFieldValue: (field: string, value: any, shouldValidate?: boolean | undefined) => Promise<void> | Promise<FormikErrors<ITaskModel>>;
+    handler_onEdit_project: () => void;
+    setFieldValue: (field: string, value: any, shouldValidate?: boolean | undefined) => Promise<void> | Promise<FormikErrors<IGetTaskModel>>;
+    project_list: Array<{ id: string; project_title: string; color: string; }>;
 }
 
-export interface IModel {
-    task_title?: string;
-    description?: string;
-    priority_color?: string;
-    priority_title?: string;
-    due_date?: string;
-    due: Dayjs | null;
-    project_title?: string;
-    project_color?: string;
-    priority?: string
+
+export interface IDateModel {
+    month: string;
+    week_day: string;
+    day: number
+}
+
+export interface IEditModel {
+    edit_title: boolean;
+    edit_due_date: boolean;
+    edit_description: boolean;
+    edit_priority: boolean;
+    edit_project: boolean;
+}
+
+export interface IPriorityLookup {
+    priority_color: string;
+    priority_title: string;
+    value: enums.Priority;
 }
