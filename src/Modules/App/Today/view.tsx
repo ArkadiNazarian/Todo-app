@@ -10,6 +10,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import SortIcon from '@mui/icons-material/Sort';
 import InsertInvitationOutlinedIcon from '@mui/icons-material/InsertInvitationOutlined';
 import FlagIcon from '@mui/icons-material/Flag';
+import { StaticDatePicker } from "@mui/x-date-pickers";
 
 export const View = (props: IFormModel) => (
     <Box>
@@ -76,15 +77,35 @@ export const View = (props: IFormModel) => (
                                 )
                         }
                     </Box>
-                    <Box sx={{ background: "#00000011", height: "60vh", width: 200, borderRadius: 2, marginTop: 4, padding: 2 }}>
+                    <Box sx={{ background: "#00000011", height: "60vh", width: 200, borderRadius: 2, marginTop: 4, padding: 2, position: "relative" }}>
                         <Typography fontSize={13} color="#00000099" fontWeight="bold">Project</Typography>
-                        <Box sx={{ display: "flex", alignItems: "center", marginTop: 1, borderBottom: 1, paddingBottom: 1, borderColor: "#00000022" }}>
+                        {
+                            props.edit.edit_project &&
+                            <Box sx={{ position: "absolute", zIndex: 1, background: "#ffffff", padding: 1, borderRadius: 2, left: 1, top: 70, boxShadow: "10px 3px 5px -1px rgb(0 0 0 / 20%),0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%)" }}>
+                                {
+                                    props.project_list.map((value, index) => (
+                                        <Box onClick={() => props.handler_update_project(value.id)} sx={{ ':hover': { background: "#00000099" }, cursor: "pointer", display: "flex", alignItems: "center", marginBottom: 1, padding: 1, borderRadius: 2 }} key={index}><Box sx={{ width: "12px", height: "12px", background: value.color, borderRadius: 4, marginRight: 1 }}></Box>{value.project_title}</Box>
+                                    ))
+                                }
+                            </Box>
+                        }
+                        <Box onClick={() => props.handler_onEdit_project()} sx={{ display: "flex", alignItems: "center", marginTop: 1, borderBottom: 1, paddingBottom: 1, borderColor: "#00000022" }}>
                             <Box sx={{ width: "10px", height: "10px", borderRadius: 4, background: props.task_details?.project_color, marginRight: 1 }}></Box>
                             <Typography fontSize={12} color="#00000099">{props.task_details?.project_title}</Typography>
                         </Box>
                         <Typography fontSize={13} color="#00000099" fontWeight="bold" sx={{ marginTop: 1 }}>Due Date</Typography>
-                        <Box sx={{ borderBottom: 1, paddingBottom: 1, borderColor: "#00000022", marginTop: 1 }}>
-                            <Typography fontSize={12} color="#00000099" sx={{ display: "flex", alignItems: "center" }}><InsertInvitationOutlinedIcon fontSize="small" sx={{ color: "#058527", marginRight: 1 }} />Today</Typography>
+                        <Box sx={{ borderBottom: 1, paddingBottom: 1, borderColor: "#00000022", marginTop: 1, }}>
+                            {
+                                props.edit.edit_due_date ?
+                                    <form>
+                                        <FormControl sx={{ position: "relative" }}>
+                                            <StaticDatePicker sx={{ position: "absolute", zIndex: 1, left: -110, boxShadow: 6 }} onClose={() => props.handler_onEdit_due_date()} orientation="portrait" value={props.form_data.edited_due_date} onChange={(value) => props.setFieldValue('edited_due_date', value)} onAccept={props.action_submit} />
+                                        </FormControl>
+                                    </form>
+                                    :
+                                    <Typography onClick={() => props.handler_onEdit_due_date()} fontSize={12} color="#00000099" sx={{ display: "flex", alignItems: "center" }}><InsertInvitationOutlinedIcon fontSize="small" sx={{ color: "#058527", marginRight: 1 }} />Today</Typography>
+                            }
+
                         </Box>
                         <Box onClick={() => props.handler_onEdit_priority()}>
                             <Typography fontSize={13} color="#00000099" fontWeight="bold" sx={{ marginTop: 1 }}>Priority</Typography>
@@ -92,10 +113,10 @@ export const View = (props: IFormModel) => (
                                 <Typography fontSize={12} color="#00000099" sx={{ display: "flex", alignItems: "center" }}><FlagIcon fontSize="small" sx={{ color: props.task_details?.priority_color, marginRight: 1 }} />{props.task_details?.priority_title}</Typography>
                                 {
                                     props.edit.edit_priority &&
-                                    <Box sx={{ position: "absolute", background: "#ffffff", padding: 2, borderRadius: 2, left: 20, top: 30 }}>
+                                    <Box sx={{ position: "absolute", background: "#ffffff", padding: 1, borderRadius: 2, left: 1, top: 30, boxShadow: "10px 3px 5px -1px rgb(0 0 0 / 20%),0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%)" }}>
                                         {
                                             props.priority_list.map((value, index) => (
-                                                <Typography onClick={() => props.handler_update_priority(value.value)} sx={{ cursor: "pointer" }} key={index}><FlagIcon sx={{ color: value.priority_color }} />{value.priority_title}</Typography>
+                                                <Typography onClick={() => props.handler_update_priority(value.value)} sx={{ ':hover': { background: "#00000099" }, cursor: "pointer", display: "flex", alignItems: "center", marginBottom: 1, padding: 1, borderRadius: 2 }} key={index}><FlagIcon sx={{ color: value.priority_color }} />{value.priority_title}</Typography>
                                             ))
                                         }
 

@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { getMonthTitle, getPriorityColor, getPriorityTitle, getWeekdayTitle } from "../../../Enums/enum-parser";
 import { db } from "../../../Firebase/firbase-config";
 import { getAccountSelector } from "../../Auth/redux";
-import { IFormModel, IModel, ITaskModel } from "./model";
+import { IDateModel, IEditModel, IFormModel, ISetTaskModel, IPriorityLookup, IGetTaskModel } from "./model";
 import *as yup from 'yup';
 import { useFormik } from "formik";
 import * as enums from "../../../Enums/enums";
@@ -15,16 +15,17 @@ export const useContainer = (): IFormModel => {
 
     const user_data = useSelector(getAccountSelector);
 
-    const get_task_collection = query(collection(db, "tasks"), where("user_id", "==", user_data.token), where("due_date", "==", dayjs().format("DD-MM-YYYY")));
+    const get_tasks_collection = query(collection(db, "tasks"), where("user_id", "==", user_data.token), where("due_date", "==", dayjs().format("DD-MM-YYYY")));
+    const get_projects_collection =query(collection(db, "project"), where("user_id", "==", user_data.token));
 
-    const [task_list, set_task_list] = useState<Array<ITaskModel>>([]);
-    const [date, set_date] = useState<{ month: string; week_day: string; day: number }>();
-    const [open_task_modal, set_open_task_modal] = useState(false);
-    const [task_details, set_task_details] = useState<IModel>();
-    const [edit, set_edit] = useState<{ edit_title: boolean; edit_description: boolean; edit_priority: boolean }>({ edit_title: false, edit_description: false, edit_priority: false });
-    const [task_id, set_task_id] = useState("");
-    const [priority_list, set_priority_list] = useState<Array<{ priority_color: string; priority_title: string; value: enums.Priority }>>([]);
-
+    const [task_list, set_task_list] = useState<Array<IGetTaskModel>>([]);
+    const [date, set_date] = useState<IDateModel>();
+    const [open_task_modal, set_open_task_modal] = useState<boolean>(false);
+    const [task_details, set_task_details] = useState<ISetTaskModel>();
+    const [edit, set_edit] = useState<IEditModel>({ edit_title: false, edit_description: false, edit_priority: false, edit_due_date: false, edit_project: false });
+    const [task_id, set_task_id] = useState<string>("");
+    const [priority_list, set_priority_list] = useState<Array<IPriorityLookup>>([]);
+    const [project_list, set_project_list] = useState<Array<{ id: string; project_title: string; color: string; }>>([])
 
     useEffect(() => {
         const get_month = new Date().getMonth();
@@ -38,8 +39,8 @@ export const useContainer = (): IFormModel => {
 
     }, [])
 
-    onSnapshot(get_task_collection, (snapshot) => {
-        set_task_list(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })) as Array<ITaskModel>);
+    onSnapshot(get_tasks_collection, (snapshot) => {
+        set_task_list(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })) as Array<IGetTaskModel>);
     })
 
     const handler_open_task_modal = (id: string) => {
@@ -48,7 +49,7 @@ export const useContainer = (): IFormModel => {
         getDoc(get_task_details)
             .then((command_result) => {
 
-                const task_data = command_result.data() as ITaskModel;
+                const task_data = command_result.data() as IGetTaskModel;
                 const project_title = doc(db, "project", task_data.project_id);
                 getDoc(project_title)
                     .then((command_result) => {
@@ -60,7 +61,8 @@ export const useContainer = (): IFormModel => {
                             priority_color: getPriorityColor(task_data.priority)!,
                             project_title: project_data.project_title,
                             due_date: task_data.due_date,
-                            project_color: project_data.color
+                            project_color: project_data.color,
+                            edited_due_date: dayjs()
                         })
                         set_open_task_modal(true);
                     })
@@ -81,12 +83,21 @@ export const useContainer = (): IFormModel => {
 
     const handler_close_task_modal = () => {
         set_open_task_modal(false);
+        set_edit({
+            edit_description: false,
+            edit_due_date: false,
+            edit_priority: false,
+            edit_title: false,
+            edit_project: false
+        });
     }
 
     const handler_onEdit_title = () => {
         set_edit({
             edit_description: false,
+            edit_due_date: false,
             edit_priority: false,
+            edit_project: false,
             edit_title: !edit.edit_title
         });
     }
@@ -95,7 +106,9 @@ export const useContainer = (): IFormModel => {
         set_edit({
             edit_description: false,
             edit_priority: !edit.edit_priority,
-            edit_title: false
+            edit_title: false,
+            edit_due_date: false,
+            edit_project: false
         });
     }
 
@@ -103,29 +116,60 @@ export const useContainer = (): IFormModel => {
         set_edit({
             edit_description: !edit.edit_description,
             edit_priority: false,
-            edit_title: false
+            edit_due_date: false,
+            edit_title: false,
+            edit_project: false
         });
     }
 
-    const initial_values: IModel = {
+    const initial_values: ISetTaskModel = {
         task_title: "",
-        description: ""
+        description: "",
+        due_date: "",
+        priority: "",
+        priority_color: "",
+        priority_title: "",
+        project_color: "",
+        project_title: "",
+        edited_due_date: null
     };
 
     const validation_schema = yup.object().shape({
         task_title: yup.string().required("This field is required")
     });
 
-    const action_submit = (values: IModel) => {
+    const handler_onEdit_due_date = () => {
+        set_edit({
+            edit_description: false,
+            edit_priority: false,
+            edit_due_date: !edit.edit_due_date,
+            edit_title: false,
+            edit_project: false
+        });
+    }
+
+    const handler_onEdit_project = () => {
+        set_edit({
+            edit_description: false,
+            edit_priority: false,
+            edit_due_date: false,
+            edit_title: false,
+            edit_project: !edit.edit_project
+        });
+    }
+
+    const action_submit = (values: ISetTaskModel) => {
         const get_task_details = doc(db, "tasks", task_id);
 
-        updateDoc(get_task_details, { task_title: values.task_title, description: values.description, priority: values.priority })
+        updateDoc(get_task_details, { task_title: values.task_title, description: values.description, due_date: values.edited_due_date?.format("DD-MM-YYYY") ?? dayjs().format("DD-MM-YYYY") })
             .then(() => {
-                set_task_details({ ...task_details, task_title: values.task_title, description: values.description });
+                set_task_details({ ...task_details, task_title: values.task_title, description: values.description, edited_due_date: dayjs() });
                 set_edit({
                     edit_description: false,
                     edit_priority: false,
-                    edit_title: false
+                    edit_due_date: false,
+                    edit_title: false,
+                    edit_project: false
                 });
             })
             .catch((command_result) => {
@@ -138,12 +182,39 @@ export const useContainer = (): IFormModel => {
 
         updateDoc(get_task_details, { priority: value })
             .then(() => {
-                set_task_details({ ...task_details, priority_color: getPriorityColor(value), priority_title: getPriorityTitle(value) });
+                set_task_details({ ...task_details, priority_color: getPriorityColor(value), priority_title: getPriorityTitle(value), edited_due_date: dayjs() });
                 set_edit({
                     edit_description: false,
                     edit_priority: false,
-                    edit_title: false
+                    edit_due_date: false,
+                    edit_title: false,
+                    edit_project: false
                 });
+            })
+            .catch((command_result) => {
+                console.log(command_result)
+            })
+    }
+
+    const handler_update_project = (project_id: string) => {
+        const get_task_details = doc(db, "tasks", task_id);
+
+        updateDoc(get_task_details, { project_id: project_id })
+            .then(() => {
+                const project_title = doc(db, "project", project_id);
+                getDoc(project_title)
+                    .then((command_result) => {
+                        const project_details = command_result.data() as { project_title: string; color: string; };
+                        set_task_details({ ...task_details, project_title: project_details.project_title, project_color: project_details.color, edited_due_date: dayjs() });
+                        set_edit({
+                            edit_description: false,
+                            edit_priority: false,
+                            edit_due_date: false,
+                            edit_title: false,
+                            edit_project: false
+                        });
+                    })
+
             })
             .catch((command_result) => {
                 console.log(command_result)
@@ -182,10 +253,13 @@ export const useContainer = (): IFormModel => {
                 value: enums.Priority.White
             },
         ])
-
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [task_details])
 
-
+    onSnapshot(get_projects_collection, (snapshot) => {
+        const array = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })) as Array<{ id: string, color: string, project_title: string }>;
+        set_project_list(array);
+    })
 
     return {
         task_list,
@@ -203,7 +277,12 @@ export const useContainer = (): IFormModel => {
         handler_onEdit_description,
         handler_onEdit_priority,
         priority_list,
-        handler_update_priority
+        handler_update_priority,
+        handler_update_project,
+        handler_onEdit_due_date,
+        setFieldValue: formik.setFieldValue,
+        project_list,
+        handler_onEdit_project
     }
 
 }
