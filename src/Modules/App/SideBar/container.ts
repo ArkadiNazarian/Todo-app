@@ -51,6 +51,7 @@ export const useContainer = (): IFormModel => {
     };
 
     const handler_open_task_modal = () => {
+        task_formik.setValues({ description: "", due_date: null, priority: enums.Priority.White, task_title: "", project_id: project_list[0].id });
         set_open_task_modal(true);
     }
 
@@ -60,7 +61,7 @@ export const useContainer = (): IFormModel => {
 
     const handler_close_task_modal = () => {
         set_open_task_modal(false);
-        task_formik.setValues({ description: "", due_date: null, priority: enums.Priority.White, task_title: "" ,project_id: ""});
+        task_formik.setValues({ description: "", due_date: null, priority: enums.Priority.White, task_title: "", project_id: project_list[0].id });
     }
 
     const handler_close_project_modal = () => {
@@ -75,14 +76,14 @@ export const useContainer = (): IFormModel => {
             due_date: values.due_date?.format("DD-MM-YYYY"),
             priority: values.priority,
             user_id: user_data.token,
-            project_id:values.project_id
+            project_id: values.project_id
         })
             .then(() => {
                 handler_close_task_modal();
                 toast.success("Task was added successfully", {
                     position: toast.POSITION.TOP_RIGHT
                 })
-                task_formik.setValues({ description: "", due_date: null, priority: enums.Priority.White, task_title: "",project_id: "" });
+                task_formik.setValues({ description: "", due_date: null, priority: enums.Priority.White, task_title: "", project_id: project_list[0].id });
             })
             .catch((command_result) => {
                 handler_close_task_modal();
@@ -103,7 +104,7 @@ export const useContainer = (): IFormModel => {
                 toast.success("Project was added successfully", {
                     position: toast.POSITION.TOP_RIGHT
                 })
-                project_formik.setValues({ project_title: "", color: "#808080" });
+                project_formik.setValues({ project_title: "", color: "#808080"});
             })
             .catch((command_result) => {
                 handler_close_project_modal();

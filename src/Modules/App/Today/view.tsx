@@ -42,7 +42,7 @@ export const View = (props: IFormModel) => (
             </Box>
         </Box>
         <Modal open={props.open_task_modal} onClose={() => props.handler_close_task_modal()}>
-            <Box sx={{ position: "absolute", top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 800, height: "80%", borderRadius: 2, boxShadow: 24, p: 4, background: "#ffffff" }}>
+            <Box sx={{ position: "absolute", top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 800, height: "60%", borderRadius: 2, boxShadow: 24, p: 4, background: "#ffffff" }}>
                 <Box sx={{ borderBottom: 1, paddingBottom: 2, borderColor: "#00000033", display: "flex", justifyContent: "space-between" }} >
                     <Typography fontSize={15} color="#00000099" sx={{ display: "flex", alignItems: "center", }}><CalendarMonthOutlinedIcon sx={{ color: "#058527", marginRight: "8px", fontSize: 20 }} />Today</Typography>
                     <CloseIcon onClick={() => props.handler_close_task_modal()} sx={{ ':hover': { cursor: "pointer", background: "#00000022", borderRadius: 1 } }} />
@@ -67,7 +67,7 @@ export const View = (props: IFormModel) => (
                             props.edit.edit_description ?
                                 <form onSubmit={props.action_submit}>
                                     <FormControl >
-                                        <TextField label="Task name" variant="standard" name="description" value={props.form_data.description} onChange={props.handleChange} onBlur={() => props.action_submit()}></TextField>
+                                        <TextField sx={{marginTop:4,marginLeft:4}} label="Description" variant="standard" name="description" value={props.form_data.description} onChange={props.handleChange} onBlur={() => props.action_submit()}></TextField>
                                     </FormControl>
                                 </form> :
                                 props.task_details?.description === "" ? (
@@ -77,7 +77,7 @@ export const View = (props: IFormModel) => (
                                 )
                         }
                     </Box>
-                    <Box sx={{ background: "#00000011", height: "60vh", width: 200, borderRadius: 2, marginTop: 4, padding: 2, position: "relative" }}>
+                    <Box sx={{ background: "#00000011", height: "50vh", width: 200, borderRadius: 2, marginTop: 4, padding: 2, position: "relative" }}>
                         <Typography fontSize={13} color="#00000099" fontWeight="bold">Project</Typography>
                         {
                             props.edit.edit_project &&
@@ -99,7 +99,7 @@ export const View = (props: IFormModel) => (
                                 props.edit.edit_due_date ?
                                     <form>
                                         <FormControl sx={{ position: "relative" }}>
-                                            <StaticDatePicker sx={{ position: "absolute", zIndex: 1, left: -110, boxShadow: 6 }} onClose={() => props.handler_onEdit_due_date()} orientation="portrait" value={props.form_data.edited_due_date} onChange={(value) => props.setFieldValue('edited_due_date', value)} onAccept={props.action_submit} />
+                                            <StaticDatePicker sx={{ position: "absolute", zIndex: 1, left: -110, boxShadow: 6}} onClose={() => props.handler_onEdit_due_date()} orientation="portrait" value={props.form_data.edited_due_date} onChange={(value) => props.setFieldValue('edited_due_date', value)} onAccept={props.action_submit} />
                                         </FormControl>
                                     </form>
                                     :
@@ -126,37 +126,6 @@ export const View = (props: IFormModel) => (
                         </Box>
                     </Box>
                 </Box>
-
-                {/* <form onSubmit={props.task.action_add_task}>
-                    <FormGroup>
-                        <TextField type="text" placeholder="Task name" variant="standard" name="task_title" value={props.task.task_form_data.task_title} onChange={props.task.handleChange} onBlur={props.task.handleBlur} />
-                        <TextField type="text" sx={{ marginTop: 2 }} placeholder="Description" variant="standard" name="description" value={props.task.task_form_data.description} onChange={props.task.handleChange} onBlur={props.task.handleBlur} />
-                        <DatePicker label="Due date" sx={{ marginTop: 5, width: 200 }} value={props.task.task_form_data.due_date} onChange={(value) => props.task.setFieldValue('due_date', value)} />
-                    </FormGroup>
-                    <FormControl sx={{ marginTop: 3, minWidth: 120 }}>
-                        <InputLabel>Priority</InputLabel>
-                        <Select value={props.task.task_form_data.priority} label="Priority" onChange={props.task.handleChange} name="priority" >
-                            <MenuItem value={enums.Priority.Red}><FlagIcon sx={{ color: "#bd0416" }} />Priority 1</MenuItem>
-                            <MenuItem value={enums.Priority.Orange}><FlagIcon sx={{ color: "#f57c02" }} />Priority 2</MenuItem>
-                            <MenuItem value={enums.Priority.Blue}><FlagIcon sx={{ color: "#0356fc" }} />Priority 3</MenuItem>
-                            <MenuItem value={enums.Priority.White}><FlagIcon sx={{ color: "#cfcfcf" }} />Priority 4</MenuItem>
-                        </Select>
-                    </FormControl>
-                    <FormControl sx={{ marginTop: 3, minWidth: 120 }}>
-                        <InputLabel>Project</InputLabel>
-                        <Select value={props.task.task_form_data.project_id} label="Project" onChange={props.task.handleChange} name="project_id" >
-                            {
-                                props.project_list.map((values, index) => (
-                                    <MenuItem key={index} value={values.id} sx={{ display: "flex", flexDirection: "row", alignItems: "center", marginBottom: 1 }}><Box sx={{ width: "12px", height: "12px", background: values.color, borderRadius: 4, marginRight: 1 }}></Box>{values.project_title}</MenuItem>
-                                ))
-                            }
-                        </Select>
-                    </FormControl>
-                    <Box sx={{ marginTop: 3, marginLeft: 25 }}>
-                        <Button variant="outlined" onClick={() => props.task.handler_close_task_modal()}>Cancel</Button>
-                        <Button type="submit" variant="contained" sx={{ marginLeft: 2 }}>Submit</Button>
-                    </Box>
-                </form>*/}
             </Box>
         </Modal>
     </Box>
