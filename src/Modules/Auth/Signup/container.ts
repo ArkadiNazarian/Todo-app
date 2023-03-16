@@ -2,15 +2,18 @@ import { FormikErrors, useFormik } from "formik";
 import { IFormModel, IModel } from "./model";
 import *as yup from 'yup';
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth } from "../../../Firebase/firbase-config";
+import { auth, db } from "../../../Firebase/firbase-config";
 import { route_names } from "../../../Routes/route-name";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { addDoc, collection } from "firebase/firestore";
 
 export const useContainer = (): IFormModel => {
 
     const app_routes = route_names();
     const navigate = useNavigate();
+    
+    const add_project_collection = collection(db, "project");
 
     const initial_values: IModel = {
         email: "",
@@ -28,11 +31,24 @@ export const useContainer = (): IFormModel => {
         createUserWithEmailAndPassword(auth, values.email, values.password)
             .then((command_result) => {
                 const user = command_result.user;
+                console.log(user.uid)
                 updateProfile(user, {
                     displayName: values.name
                 })
                     .then(() => {
-                        navigate(app_routes.login_path)
+                        addDoc(add_project_collection, {
+                            project_title: "🏠Home",
+                            color: "",
+                            user_id: user.uid
+                        })
+                            .then(() => { 
+                                navigate(app_routes.login_path);  
+                            })
+                            .catch((command_result) => { 
+                                toast.error(command_result.message, {
+                                    position: toast.POSITION.TOP_RIGHT
+                                })
+                            })
                     })
                     .catch((command_result)=>{
                         toast.error(command_result.message,{

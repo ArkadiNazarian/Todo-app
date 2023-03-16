@@ -1,12 +1,12 @@
 import dayjs from "dayjs";
-import { collection, doc, getDoc, onSnapshot, query, updateDoc, where } from "firebase/firestore";
+import { arrayRemove, arrayUnion, collection, doc, getDoc, onSnapshot, query, updateDoc, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { getMonthTitle, getPriorityColor, getPriorityTitle, getWeekdayTitle } from "../../../Enums/enum-parser";
 import { db } from "../../../Firebase/firbase-config";
 import { getAccountSelector } from "../../Auth/redux";
-import { IDateModel, IEditModel, IFormModel, ISetTaskModel, IPriorityLookup, IGetTaskModel } from "./model";
+import { IDateModel, IEditModel, IFormModel, ISetTaskModel, IPriorityLookup, IGetTaskModel, ISubTaskModel } from "./model";
 import *as yup from 'yup';
 import { useFormik } from "formik";
 import * as enums from "../../../Enums/enums";
@@ -16,7 +16,7 @@ export const useContainer = (): IFormModel => {
     const user_data = useSelector(getAccountSelector);
 
     const get_tasks_collection = query(collection(db, "tasks"), where("user_id", "==", user_data.token), where("due_date", "==", dayjs().format("DD-MM-YYYY")));
-    const get_projects_collection =query(collection(db, "project"), where("user_id", "==", user_data.token));
+    const get_projects_collection = query(collection(db, "project"), where("user_id", "==", user_data.token));
 
     const [task_list, set_task_list] = useState<Array<IGetTaskModel>>([]);
     const [date, set_date] = useState<IDateModel>();
@@ -26,6 +26,8 @@ export const useContainer = (): IFormModel => {
     const [task_id, set_task_id] = useState<string>("");
     const [priority_list, set_priority_list] = useState<Array<IPriorityLookup>>([]);
     const [project_list, set_project_list] = useState<Array<{ id: string; project_title: string; color: string; }>>([])
+    const [open_sub_task_modal, set_open_sub_task_modal] = useState(false);
+    const [sub_task_list, set_sub_task_list] = useState<Array<ISubTaskModel>>([]);
 
     useEffect(() => {
         const get_month = new Date().getMonth();
@@ -40,8 +42,23 @@ export const useContainer = (): IFormModel => {
     }, [])
 
     onSnapshot(get_tasks_collection, (snapshot) => {
-        set_task_list(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })) as Array<IGetTaskModel>);
+
+        const task_lists = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })) as Array<IGetTaskModel>;
+        set_task_list(task_lists)
+
+        const task_obj=task_list.find((value)=>value)
+        set_sub_task_list(task_obj?.sub_task!)
     })
+
+    const handler_open_sub_task_modal = () => {
+        set_open_sub_task_modal(true);
+    }
+
+    const handler_close_sub_task_modal = () => {
+        set_open_sub_task_modal(false);
+        sub_task_formik.setValues({ sub_task_description: "", sub_task_priority: enums.Priority.White, sub_task_title: "",id:"" });
+    }
+
 
     const handler_open_task_modal = (id: string) => {
         const get_task_details = doc(db, "tasks", id);
@@ -259,7 +276,75 @@ export const useContainer = (): IFormModel => {
     onSnapshot(get_projects_collection, (snapshot) => {
         const array = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })) as Array<{ id: string, color: string, project_title: string }>;
         set_project_list(array);
+
     })
+
+    const sub_task_initial_values: ISubTaskModel = {
+        sub_task_title: "",
+        sub_task_description: "",
+        id:"",
+        sub_task_priority: enums.Priority.White,
+    };
+
+    const random = () => {
+        // Declare all characters
+        let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+        // Pick characers randomly
+        let str = '';
+        for (let i = 0; i < 20; i++) {
+            str += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+
+        return str;
+
+    };
+
+    const action_add_sub_task = (values: ISubTaskModel) => {
+        const get_task_details = doc(db, "tasks", task_id);
+
+        updateDoc(get_task_details, {
+
+            // sub_task: arrayRemove({
+            //     id: "VHRRD0h4lD26Juz7zq8W",
+            //     sub_task_title: "2",
+            //     sub_task_description: "3",
+            //     sub_task_priority: 0,
+            // })
+
+            sub_task: arrayUnion({
+                sub_task_title: values.sub_task_title,
+                sub_task_description: values.sub_task_description,
+                sub_task_priority: values.sub_task_priority,
+                id: random()
+            })
+
+        })
+            .then(() => {
+                handler_close_task_modal();
+                toast.success("Task was added successfully", {
+                    position: toast.POSITION.TOP_RIGHT
+                })
+                sub_task_formik.setValues({ sub_task_description: "", sub_task_priority: enums.Priority.White, sub_task_title: "",id:"" });
+            })
+            .catch((command_result) => {
+                handler_close_sub_task_modal();
+                toast.error(command_result.message, {
+                    position: toast.POSITION.TOP_RIGHT
+                })
+            })
+    }
+
+    const sub_task_validation_schema = yup.object().shape({
+        sub_task_title: yup.string().required(),
+        sub_task_description: yup.string()
+    });
+
+    const sub_task_formik = useFormik({
+        initialValues: sub_task_initial_values,
+        validationSchema: sub_task_validation_schema,
+        onSubmit: action_add_sub_task
+    });
 
     return {
         task_list,
@@ -282,7 +367,17 @@ export const useContainer = (): IFormModel => {
         handler_onEdit_due_date,
         setFieldValue: formik.setFieldValue,
         project_list,
-        handler_onEdit_project
+        handler_onEdit_project,
+        sub_task: {
+            sub_task_list,
+            open_sub_task_modal,
+            handler_open_sub_task_modal,
+            handler_close_sub_task_modal,
+            action_add_sub_task: sub_task_formik.handleSubmit,
+            task_form_data: sub_task_formik.values,
+            handleChange: sub_task_formik.handleChange,
+            handleBlur: sub_task_formik.handleBlur
+        }
     }
 
 }

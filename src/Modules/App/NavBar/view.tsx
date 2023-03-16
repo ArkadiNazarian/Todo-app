@@ -14,7 +14,7 @@ export const View = (props: IFormModel) => (
         <Box sx={{ paddingRight: 3, position: "relative" }}>
             <Avatar onClick={() => props.handler_onView_account()} sx={{ width: 34, height: 34, cursor: "pointer" }}>{props.name}</Avatar>
             {
-                props.view_account && <Paper onFocus={() => props.handler_onView_account()} elevation={7} sx={{ position: "absolute", background: "#ffffff", borderRadius: 3, width: "17rem", height: "12rem", right: 25, top: 40, padding: 2 }}>
+                props.view_account && <Paper onFocus={() => props.handler_onView_account()} elevation={7} sx={{ position: "absolute", background: "#ffffff", borderRadius: 3, width: "17rem", height: "7rem", right: 25, top: 40, padding: 2 }}>
                     <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", cursor: "pointer" }}>
                         <Avatar sx={{ width: 44, height: 44 }}>{props.name}</Avatar>
                         <Box sx={{ marginLeft: 1 }}>
@@ -22,7 +22,7 @@ export const View = (props: IFormModel) => (
                             <Typography color={"#00000055"}>{props.user_info.email}</Typography>
                         </Box>
                     </Box>
-                    <Box onClick={() => props.action_signout()} sx={{ display: "flex", color: "#00000099", flexDirection: "row", alignItems: "center", marginTop: 10, cursor: "pointer" }} >
+                    <Box onClick={() => props.action_signout()} sx={{ display: "flex", color: "#00000099", flexDirection: "row", alignItems: "center", marginTop: 5, cursor: "pointer" }} >
                         <LogoutOutlinedIcon />
                         <Typography fontSize={15}>Log out</Typography>
                     </Box>
