@@ -9,6 +9,7 @@ export interface IGetTaskModel {
     priority: enums.Priority;
     due_date: string;
     project_id: string;
+    sub_task:Array<ISubTaskModel>;
 }
 
 export interface ISetTaskModel {
@@ -21,6 +22,13 @@ export interface ISetTaskModel {
     project_title?: string;
     project_color?: string;
     priority?: string;
+}
+
+export interface ISubTaskModel {
+    sub_task_title: string;
+    sub_task_description: string;
+    sub_task_priority: enums.Priority;
+    id:string
 }
 
 export interface IFormModel {
@@ -45,6 +53,16 @@ export interface IFormModel {
     handler_onEdit_project: () => void;
     setFieldValue: (field: string, value: any, shouldValidate?: boolean | undefined) => Promise<void> | Promise<FormikErrors<IGetTaskModel>>;
     project_list: Array<{ id: string; project_title: string; color: string; }>;
+    sub_task:{
+        sub_task_list:Array<ISubTaskModel>;
+        handler_open_sub_task_modal: () => void;
+        open_sub_task_modal: boolean;
+        handler_close_sub_task_modal: () => void;
+        action_add_sub_task: () => void;
+        handleChange: (e: any) => void;
+        handleBlur: (e: any) => void;
+        task_form_data: ISubTaskModel;
+    }
 }
 
 

@@ -1,10 +1,10 @@
-import { FormControl, Modal, TextField, Typography } from "@mui/material";
+import { Button, FormControl, FormGroup, InputLabel, MenuItem, Modal, Select, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { NavBar } from "../NavBar";
 import { SideBar } from "../SideBar";
 import { IFormModel } from "./model";
 import { getPriorityColor } from "../../../Enums/enum-parser";
-
+import * as enums from "../../../Enums/enums";
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import SortIcon from '@mui/icons-material/Sort';
@@ -76,6 +76,7 @@ export const View = (props: IFormModel) => (
                                     <Typography fontSize={15} sx={{ marginTop: 2, marginLeft: 4 }} onClick={() => props.handler_onEdit_description()}>{props.task_details?.description}</Typography>
                                 )
                         }
+                        <Button onClick={()=>props.sub_task.handler_open_sub_task_modal()}>click</Button>
                     </Box>
                     <Box sx={{ background: "#00000011", height: "50vh", width: 200, borderRadius: 2, marginTop: 4, padding: 2, position: "relative" }}>
                         <Typography fontSize={13} color="#00000099" fontWeight="bold">Project</Typography>
@@ -126,6 +127,29 @@ export const View = (props: IFormModel) => (
                         </Box>
                     </Box>
                 </Box>
+            </Box>
+        </Modal>
+        <Modal open={props.sub_task.open_sub_task_modal} onClose={() => props.sub_task.handler_close_sub_task_modal()}>
+            <Box sx={{ position: "absolute", top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, borderRadius: 2, boxShadow: 24, p: 4, background: "#ffffff" }}>
+                <form onSubmit={props.sub_task.action_add_sub_task}>
+                    <FormGroup>
+                        <TextField type="text" placeholder="Task name" variant="standard" name="sub_task_title" value={props.sub_task.task_form_data.sub_task_title} onChange={props.sub_task.handleChange} onBlur={props.sub_task.handleBlur} />
+                        <TextField type="text" sx={{ marginTop: 2 }} placeholder="Description" variant="standard" name="sub_task_description" value={props.sub_task.task_form_data.sub_task_description} onChange={props.sub_task.handleChange} onBlur={props.sub_task.handleBlur} />
+                    </FormGroup>
+                    <FormControl sx={{ marginTop: 3, minWidth: 120 }}>
+                        <InputLabel>Priority</InputLabel>
+                        <Select value={props.sub_task.task_form_data.sub_task_priority} label="Priority" onChange={props.sub_task.handleChange} name="sub_task_priority" >
+                            <MenuItem value={enums.Priority.Red}><FlagIcon sx={{ color: "#bd0416" }} />Priority 1</MenuItem>
+                            <MenuItem value={enums.Priority.Orange}><FlagIcon sx={{ color: "#f57c02" }} />Priority 2</MenuItem>
+                            <MenuItem value={enums.Priority.Blue}><FlagIcon sx={{ color: "#0356fc" }} />Priority 3</MenuItem>
+                            <MenuItem value={enums.Priority.White}><FlagIcon sx={{ color: "#cfcfcf" }} />Priority 4</MenuItem>
+                        </Select>
+                    </FormControl>
+                    <Box sx={{ marginTop: 3, marginLeft: 25 }}>
+                        <Button variant="outlined" onClick={() => props.sub_task.handler_close_sub_task_modal()}>Cancel</Button>
+                        <Button type="submit" variant="contained" sx={{ marginLeft: 2 }}>Submit</Button>
+                    </Box>
+                </form>
             </Box>
         </Modal>
     </Box>
