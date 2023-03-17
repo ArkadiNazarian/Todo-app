@@ -27,7 +27,6 @@ export const useContainer = (): IFormModel => {
     const [priority_list, set_priority_list] = useState<Array<IPriorityLookup>>([]);
     const [project_list, set_project_list] = useState<Array<{ id: string; project_title: string; color: string; }>>([])
     const [open_sub_task_modal, set_open_sub_task_modal] = useState(false);
-    const [sub_task_list, set_sub_task_list] = useState<Array<ISubTaskModel>>([]);
 
     useEffect(() => {
         const get_month = new Date().getMonth();
@@ -42,12 +41,8 @@ export const useContainer = (): IFormModel => {
     }, [])
 
     onSnapshot(get_tasks_collection, (snapshot) => {
-
         const task_lists = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })) as Array<IGetTaskModel>;
         set_task_list(task_lists)
-
-        const task_obj=task_list.find((value)=>value)
-        set_sub_task_list(task_obj?.sub_task!)
     })
 
     const handler_open_sub_task_modal = () => {
@@ -56,7 +51,7 @@ export const useContainer = (): IFormModel => {
 
     const handler_close_sub_task_modal = () => {
         set_open_sub_task_modal(false);
-        sub_task_formik.setValues({ sub_task_description: "", sub_task_priority: enums.Priority.White, sub_task_title: "",id:"" });
+        sub_task_formik.setValues({ sub_task_description: "", sub_task_priority: enums.Priority.White, sub_task_title: "", id: "" });
     }
 
 
@@ -79,7 +74,8 @@ export const useContainer = (): IFormModel => {
                             project_title: project_data.project_title,
                             due_date: task_data.due_date,
                             project_color: project_data.color,
-                            edited_due_date: dayjs()
+                            edited_due_date: dayjs(),
+                            sub_task: task_data.sub_task
                         })
                         set_open_task_modal(true);
                     })
@@ -282,7 +278,7 @@ export const useContainer = (): IFormModel => {
     const sub_task_initial_values: ISubTaskModel = {
         sub_task_title: "",
         sub_task_description: "",
-        id:"",
+        id: "",
         sub_task_priority: enums.Priority.White,
     };
 
@@ -321,11 +317,12 @@ export const useContainer = (): IFormModel => {
 
         })
             .then(() => {
-                handler_close_task_modal();
-                toast.success("Task was added successfully", {
+                handler_close_sub_task_modal();
+                handler_open_task_modal(task_id)
+                toast.success("Sub-task was added successfully", {
                     position: toast.POSITION.TOP_RIGHT
                 })
-                sub_task_formik.setValues({ sub_task_description: "", sub_task_priority: enums.Priority.White, sub_task_title: "",id:"" });
+                sub_task_formik.setValues({ sub_task_description: "", sub_task_priority: enums.Priority.White, sub_task_title: "", id: "" });
             })
             .catch((command_result) => {
                 handler_close_sub_task_modal();
@@ -369,7 +366,6 @@ export const useContainer = (): IFormModel => {
         project_list,
         handler_onEdit_project,
         sub_task: {
-            sub_task_list,
             open_sub_task_modal,
             handler_open_sub_task_modal,
             handler_close_sub_task_modal,
