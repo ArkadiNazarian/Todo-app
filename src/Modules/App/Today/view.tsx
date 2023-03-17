@@ -42,7 +42,7 @@ export const View = (props: IFormModel) => (
             </Box>
         </Box>
         <Modal open={props.open_task_modal} onClose={() => props.handler_close_task_modal()}>
-            <Box sx={{ position: "absolute", top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 800, height: "60%", borderRadius: 2, boxShadow: 24, p: 4, background: "#ffffff" }}>
+            <Box sx={{ position: "absolute", top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 800, minHeight: "60%", borderRadius: 2, boxShadow: 24, p: 4, background: "#ffffff" }}>
                 <Box sx={{ borderBottom: 1, paddingBottom: 2, borderColor: "#00000033", display: "flex", justifyContent: "space-between" }} >
                     <Typography fontSize={15} color="#00000099" sx={{ display: "flex", alignItems: "center", }}><CalendarMonthOutlinedIcon sx={{ color: "#058527", marginRight: "8px", fontSize: 20 }} />Today</Typography>
                     <CloseIcon onClick={() => props.handler_close_task_modal()} sx={{ ':hover': { cursor: "pointer", background: "#00000022", borderRadius: 1 } }} />
@@ -63,11 +63,12 @@ export const View = (props: IFormModel) => (
                             }
 
                         </Box>
+
                         {
                             props.edit.edit_description ?
                                 <form onSubmit={props.action_submit}>
                                     <FormControl >
-                                        <TextField sx={{marginTop:4,marginLeft:4}} label="Description" variant="standard" name="description" value={props.form_data.description} onChange={props.handleChange} onBlur={() => props.action_submit()}></TextField>
+                                        <TextField sx={{ marginTop: 4, marginLeft: 4 }} label="Description" variant="standard" name="description" value={props.form_data.description} onChange={props.handleChange} onBlur={() => props.action_submit()}></TextField>
                                     </FormControl>
                                 </form> :
                                 props.task_details?.description === "" ? (
@@ -76,7 +77,23 @@ export const View = (props: IFormModel) => (
                                     <Typography fontSize={15} sx={{ marginTop: 2, marginLeft: 4 }} onClick={() => props.handler_onEdit_description()}>{props.task_details?.description}</Typography>
                                 )
                         }
-                        <Button onClick={()=>props.sub_task.handler_open_sub_task_modal()}>click</Button>
+                        <Box sx={{marginLeft:4}}>
+                            {
+                                props.task_details?.sub_task?.length !== undefined && <Typography fontSize={15} sx={{ marginTop: 4,marginBottom:2 }}>Sub-tasks</Typography>
+                            }
+                            {
+                                props.task_details?.sub_task?.map((value, index) => (
+                                    <Box key={index} sx={{ ':hover': { cursor: "pointer"}, width: 400, marginBottom: 4, borderBottom: 1, paddingBottom: 1, borderColor: "#00000022"}}>
+                                        <Box sx={{ display: "flex", alignItems: "center", }}>
+                                            <Box sx={{ width: "15px", height: "15px", borderRadius: 4, marginRight: 2, background: getPriorityColor(value.sub_task_priority) }}></Box>
+                                            <Typography fontSize={15}>{value.sub_task_title}</Typography>
+                                        </Box>
+                                        <Typography fontSize={12} sx={{ marginLeft: 5 }} color="#00000099">{value.sub_task_description}</Typography>
+                                    </Box>
+                                ))
+                            }
+                            <Button onClick={() => props.sub_task.handler_open_sub_task_modal()}>+ Add sub-task</Button>
+                        </Box>
                     </Box>
                     <Box sx={{ background: "#00000011", height: "50vh", width: 200, borderRadius: 2, marginTop: 4, padding: 2, position: "relative" }}>
                         <Typography fontSize={13} color="#00000099" fontWeight="bold">Project</Typography>
@@ -100,7 +117,7 @@ export const View = (props: IFormModel) => (
                                 props.edit.edit_due_date ?
                                     <form>
                                         <FormControl sx={{ position: "relative" }}>
-                                            <StaticDatePicker sx={{ position: "absolute", zIndex: 1, left: -110, boxShadow: 6}} onClose={() => props.handler_onEdit_due_date()} orientation="portrait" value={props.form_data.edited_due_date} onChange={(value) => props.setFieldValue('edited_due_date', value)} onAccept={props.action_submit} />
+                                            <StaticDatePicker sx={{ position: "absolute", zIndex: 1, left: -110, boxShadow: 6 }} onClose={() => props.handler_onEdit_due_date()} orientation="portrait" value={props.form_data.edited_due_date} onChange={(value) => props.setFieldValue('edited_due_date', value)} onAccept={props.action_submit} />
                                         </FormControl>
                                     </form>
                                     :

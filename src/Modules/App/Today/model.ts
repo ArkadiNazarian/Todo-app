@@ -22,6 +22,7 @@ export interface ISetTaskModel {
     project_title?: string;
     project_color?: string;
     priority?: string;
+    sub_task?:Array<ISubTaskModel>;
 }
 
 export interface ISubTaskModel {
@@ -54,7 +55,6 @@ export interface IFormModel {
     setFieldValue: (field: string, value: any, shouldValidate?: boolean | undefined) => Promise<void> | Promise<FormikErrors<IGetTaskModel>>;
     project_list: Array<{ id: string; project_title: string; color: string; }>;
     sub_task:{
-        sub_task_list:Array<ISubTaskModel>;
         handler_open_sub_task_modal: () => void;
         open_sub_task_modal: boolean;
         handler_close_sub_task_modal: () => void;
