@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { getMonthTitle, getPriorityColor, getPriorityTitle, getWeekdayTitle } from "../../../Enums/enum-parser";
 import { db } from "../../../Firebase/firbase-config";
 import { getAccountSelector } from "../../Auth/redux";
-import { IDateModel, IEditModel, IFormModel, ISetTaskModel, IPriorityLookup, IGetTaskModel, ISubTaskModel } from "./model";
+import { IDateModel, IEditModel, IFormModel, ISetTaskModel, IPriorityLookup, IGetTaskModel, ISubTaskModel, IEditSubTaskModel } from "./model";
 import *as yup from 'yup';
 import { useFormik } from "formik";
 import * as enums from "../../../Enums/enums";
@@ -26,7 +26,10 @@ export const useContainer = (): IFormModel => {
     const [task_id, set_task_id] = useState<string>("");
     const [priority_list, set_priority_list] = useState<Array<IPriorityLookup>>([]);
     const [project_list, set_project_list] = useState<Array<{ id: string; project_title: string; color: string; }>>([])
-    const [open_sub_task_modal, set_open_sub_task_modal] = useState(false);
+    const [open_sub_task_modal, set_open_sub_task_modal] = useState<boolean>(false);
+    const [open_more_list, set_open_more_list] = useState<boolean>(false);
+    const [edit_list, set_edit_list] = useState<string>("");
+    const [open_edit_sub_task_modal, set_open_edit_sub_task_modal] = useState<boolean>(false);
 
     useEffect(() => {
         const get_month = new Date().getMonth();
@@ -300,21 +303,12 @@ export const useContainer = (): IFormModel => {
         const get_task_details = doc(db, "tasks", task_id);
 
         updateDoc(get_task_details, {
-
-            // sub_task: arrayRemove({
-            //     id: "VHRRD0h4lD26Juz7zq8W",
-            //     sub_task_title: "2",
-            //     sub_task_description: "3",
-            //     sub_task_priority: 0,
-            // })
-
             sub_task: arrayUnion({
                 sub_task_title: values.sub_task_title,
                 sub_task_description: values.sub_task_description,
                 sub_task_priority: values.sub_task_priority,
                 id: random()
             })
-
         })
             .then(() => {
                 handler_close_sub_task_modal();
@@ -342,6 +336,128 @@ export const useContainer = (): IFormModel => {
         validationSchema: sub_task_validation_schema,
         onSubmit: action_add_sub_task
     });
+    
+    const handler_onView_more = (id: string) => {
+       
+        
+        set_open_more_list(open_more_list => !open_more_list);
+        set_edit_list(id)
+    }
+    const action_delete_sub_task = (id: string) => {
+        const get_task_details = doc(db, "tasks", task_id);
+        const modified_sub_task = task_details?.sub_task?.find((value, index) => value.id === id);
+
+        updateDoc(get_task_details, {
+
+            sub_task: arrayRemove({
+                sub_task_title: modified_sub_task?.sub_task_title,
+                sub_task_description: modified_sub_task?.sub_task_description,
+                sub_task_priority: modified_sub_task?.sub_task_priority,
+                id: id
+            })
+
+        })
+            .then(() => {
+                handler_open_task_modal(task_id);
+                set_open_more_list(false);
+            })
+            .catch((command_result) => {
+                handler_close_sub_task_modal();
+                toast.error(command_result.message, {
+                    position: toast.POSITION.TOP_RIGHT
+                })
+            })
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+
+    const edit_sub_task_initial_values: IEditSubTaskModel = {
+        edit_sub_task_title: "",
+        edit_sub_task_description: "",
+        id: "",
+        edit_sub_task_priority: enums.Priority.White,
+    };
+
+    const action_edit_sub_task = (values: IEditSubTaskModel) => {
+        const get_task_details = doc(db, "tasks", task_id);
+
+        const modified_sub_task = task_details?.sub_task?.find((value, index) => value.id === values.id);
+
+        const converted_onject: IEditSubTaskModel = {
+            edit_sub_task_title: modified_sub_task?.sub_task_title!,
+            edit_sub_task_description: modified_sub_task?.sub_task_description!,
+            edit_sub_task_priority: modified_sub_task?.sub_task_priority!,
+            id: modified_sub_task?.id!
+        }
+
+        updateDoc(get_task_details, {
+            sub_task: arrayRemove({
+                id: converted_onject.id,
+                sub_task_title: converted_onject.edit_sub_task_title,
+                sub_task_description: converted_onject.edit_sub_task_description,
+                sub_task_priority: converted_onject.edit_sub_task_priority,
+            })
+        })
+            .then(() => {
+                updateDoc(get_task_details, {
+                    sub_task: arrayUnion({
+                        sub_task_title: values.edit_sub_task_title,
+                        sub_task_description: values.edit_sub_task_description,
+                        sub_task_priority: values.edit_sub_task_priority,
+                        id: random()
+                    })
+                })
+                    .then(() => {
+                        set_open_edit_sub_task_modal(false)
+                        handler_open_task_modal(task_id);
+                        set_open_more_list(false);
+                    })
+                    .catch((command_result) => {
+                        handler_close_sub_task_modal();
+                        set_open_more_list(false);
+                        toast.error(command_result.message, {
+                            position: toast.POSITION.TOP_RIGHT
+                        })
+                    })
+            })
+            .catch((command_result) => {
+                handler_close_sub_task_modal();
+                set_open_more_list(false);
+                toast.error(command_result.message, {
+                    position: toast.POSITION.TOP_RIGHT
+                })
+            })
+    }
+
+    const edit_sub_task_validation_schema = yup.object().shape({
+        edit_sub_task_title: yup.string().required(),
+        edit_sub_task_description: yup.string()
+    });
+
+    const edit_sub_task_formik = useFormik({
+        initialValues: edit_sub_task_initial_values,
+        validationSchema: edit_sub_task_validation_schema,
+        onSubmit: action_edit_sub_task
+    });
+
+    const handler_open_edit_sub_task_modal = (id: string) => {
+        const modified_sub_task = task_details?.sub_task?.find((value, index) => value.id === id);
+
+        const converted_onject: IEditSubTaskModel = {
+            edit_sub_task_title: modified_sub_task?.sub_task_title!,
+            edit_sub_task_description: modified_sub_task?.sub_task_description!,
+            edit_sub_task_priority: modified_sub_task?.sub_task_priority!,
+            id: id
+        }
+
+        edit_sub_task_formik.setValues(converted_onject)
+        set_open_edit_sub_task_modal(true);
+    }
+
+    const handler_close_edit_sub_task_modal = () => {
+        set_open_edit_sub_task_modal(false);
+    }
+
 
     return {
         task_list,
@@ -373,6 +489,19 @@ export const useContainer = (): IFormModel => {
             task_form_data: sub_task_formik.values,
             handleChange: sub_task_formik.handleChange,
             handleBlur: sub_task_formik.handleBlur
+        },
+        edit_sub_task: {
+            handler_onView_more,
+            open_more_list,
+            action_delete_sub_task,
+            edit_list,
+            handler_open_edit_sub_task_modal,
+            handler_close_edit_sub_task_modal,
+            open_edit_sub_task_modal,
+            action_edit_sub_task: edit_sub_task_formik.handleSubmit,
+            task_form_data: edit_sub_task_formik.values,
+            handleChange: edit_sub_task_formik.handleChange,
+            handleBlur: edit_sub_task_formik.handleBlur
         }
     }
 

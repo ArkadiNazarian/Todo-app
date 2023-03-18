@@ -11,6 +11,8 @@ import SortIcon from '@mui/icons-material/Sort';
 import InsertInvitationOutlinedIcon from '@mui/icons-material/InsertInvitationOutlined';
 import FlagIcon from '@mui/icons-material/Flag';
 import { StaticDatePicker } from "@mui/x-date-pickers";
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import Paper from "@mui/material/Paper";
 
 export const View = (props: IFormModel) => (
     <Box>
@@ -77,16 +79,26 @@ export const View = (props: IFormModel) => (
                                     <Typography fontSize={15} sx={{ marginTop: 2, marginLeft: 4 }} onClick={() => props.handler_onEdit_description()}>{props.task_details?.description}</Typography>
                                 )
                         }
-                        <Box sx={{marginLeft:4}}>
+                        <Box sx={{ marginLeft: 4 }}>
                             {
-                                props.task_details?.sub_task?.length !== undefined && <Typography fontSize={15} sx={{ marginTop: 4,marginBottom:2 }}>Sub-tasks</Typography>
+                                props.task_details?.sub_task?.length !== undefined && <Typography fontSize={15} sx={{ marginTop: 4, marginBottom: 2 }}>Sub-tasks</Typography>
                             }
                             {
                                 props.task_details?.sub_task?.map((value, index) => (
-                                    <Box key={index} sx={{ ':hover': { cursor: "pointer"}, width: 400, marginBottom: 4, borderBottom: 1, paddingBottom: 1, borderColor: "#00000022"}}>
+                                    <Box key={index} sx={{ ':hover': { cursor: "pointer" }, width: 400, marginBottom: 4, borderBottom: 1, paddingBottom: 1, borderColor: "#00000022" }}>
                                         <Box sx={{ display: "flex", alignItems: "center", }}>
                                             <Box sx={{ width: "15px", height: "15px", borderRadius: 4, marginRight: 2, background: getPriorityColor(value.sub_task_priority) }}></Box>
-                                            <Typography fontSize={15}>{value.sub_task_title}</Typography>
+                                            <Box sx={{ width: "100%", display: "flex", justifyContent: "space-between", position: "relative" }}>
+                                                <Typography fontSize={15}>{value.sub_task_title}</Typography>
+
+                                                <MoreHorizIcon onClick={() => props.edit_sub_task.handler_onView_more(value.id)} />
+                                                {
+                                                    (props.edit_sub_task.open_more_list && props.edit_sub_task.edit_list === value.id) && <Paper sx={{ position: "absolute", right: -1, top: 30, padding: 1, zIndex: 1 }}>
+                                                        <Typography onClick={()=>props.edit_sub_task.handler_open_edit_sub_task_modal(value.id)}>Edit</Typography>
+                                                        <Typography color="#FF0000" onClick={() => props.edit_sub_task.action_delete_sub_task(value.id)}>Delete</Typography>
+                                                    </Paper>
+                                                }
+                                            </Box>
                                         </Box>
                                         <Typography fontSize={12} sx={{ marginLeft: 5 }} color="#00000099">{value.sub_task_description}</Typography>
                                     </Box>
@@ -164,6 +176,29 @@ export const View = (props: IFormModel) => (
                     </FormControl>
                     <Box sx={{ marginTop: 3, marginLeft: 25 }}>
                         <Button variant="outlined" onClick={() => props.sub_task.handler_close_sub_task_modal()}>Cancel</Button>
+                        <Button type="submit" variant="contained" sx={{ marginLeft: 2 }}>Submit</Button>
+                    </Box>
+                </form>
+            </Box>
+        </Modal>
+        <Modal open={props.edit_sub_task.open_edit_sub_task_modal} onClose={() => props.edit_sub_task.handler_close_edit_sub_task_modal()}>
+            <Box sx={{ position: "absolute", top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, borderRadius: 2, boxShadow: 24, p: 4, background: "#ffffff" }}>
+                <form onSubmit={props.edit_sub_task.action_edit_sub_task}>
+                    <FormGroup>
+                        <TextField type="text" placeholder="Task name" variant="standard" name="edit_sub_task_title" value={props.edit_sub_task.task_form_data.edit_sub_task_title} onChange={props.edit_sub_task.handleChange} onBlur={props.edit_sub_task.handleBlur} />
+                        <TextField type="text" sx={{ marginTop: 2 }} placeholder="Description" variant="standard" name="edit_sub_task_description" value={props.edit_sub_task.task_form_data.edit_sub_task_description} onChange={props.edit_sub_task.handleChange} onBlur={props.edit_sub_task.handleBlur} />
+                    </FormGroup>
+                    <FormControl sx={{ marginTop: 3, minWidth: 120 }}>
+                        <InputLabel>Priority</InputLabel>
+                        <Select value={props.edit_sub_task.task_form_data.edit_sub_task_priority} label="Priority" onChange={props.edit_sub_task.handleChange} name="edit_sub_task_priority" >
+                            <MenuItem value={enums.Priority.Red}><FlagIcon sx={{ color: "#bd0416" }} />Priority 1</MenuItem>
+                            <MenuItem value={enums.Priority.Orange}><FlagIcon sx={{ color: "#f57c02" }} />Priority 2</MenuItem>
+                            <MenuItem value={enums.Priority.Blue}><FlagIcon sx={{ color: "#0356fc" }} />Priority 3</MenuItem>
+                            <MenuItem value={enums.Priority.White}><FlagIcon sx={{ color: "#cfcfcf" }} />Priority 4</MenuItem>
+                        </Select>
+                    </FormControl>
+                    <Box sx={{ marginTop: 3, marginLeft: 25 }}>
+                        <Button variant="outlined" onClick={() => props.edit_sub_task.handler_close_edit_sub_task_modal()}>Cancel</Button>
                         <Button type="submit" variant="contained" sx={{ marginLeft: 2 }}>Submit</Button>
                     </Box>
                 </form>
