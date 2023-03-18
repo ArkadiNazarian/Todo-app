@@ -6,7 +6,10 @@ export interface IModel {
 }
 
 export interface IFormModel {
-    signup_path: string;
+    path: {
+        signup: string;
+        forgot_password: string;
+    };
     action_submit: () => void;
     form_data: IModel;
     form_errors: FormikErrors<IModel>;

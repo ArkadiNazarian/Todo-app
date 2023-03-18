@@ -2,6 +2,7 @@ import { route_names } from "./route-name";
 import { SignUp } from "../Modules/Auth/Signup";
 import { Login } from "../Modules/Auth/Login";
 import { Today } from "../Modules/App/Today";
+import { ForgotPassword } from "../Modules/Auth/Forgot-Password";
 
 export const routes = () => {
     const app_routes = route_names();
@@ -14,6 +15,10 @@ export const routes = () => {
         {
             path: app_routes.login_path,
             component: <Login />
+        },
+        {
+            path: app_routes.forgot_password_path,
+            component: <ForgotPassword />
         }
 
     ];
