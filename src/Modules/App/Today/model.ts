@@ -9,7 +9,7 @@ export interface IGetTaskModel {
     priority: enums.Priority;
     due_date: string;
     project_id: string;
-    sub_task:Array<ISubTaskModel>;
+    sub_task: Array<ISubTaskModel>;
 }
 
 export interface ISetTaskModel {
@@ -22,15 +22,23 @@ export interface ISetTaskModel {
     project_title?: string;
     project_color?: string;
     priority?: string;
-    sub_task?:Array<ISubTaskModel>;
+    sub_task?: Array<ISubTaskModel>;
 }
 
 export interface ISubTaskModel {
     sub_task_title: string;
     sub_task_description: string;
     sub_task_priority: enums.Priority;
-    id:string
+    id: string
 }
+
+export interface IEditSubTaskModel {
+    edit_sub_task_title: string;
+    edit_sub_task_description: string;
+    edit_sub_task_priority: enums.Priority;
+    id: string
+}
+
 
 export interface IFormModel {
     task_list: Array<IGetTaskModel>;
@@ -54,7 +62,7 @@ export interface IFormModel {
     handler_onEdit_project: () => void;
     setFieldValue: (field: string, value: any, shouldValidate?: boolean | undefined) => Promise<void> | Promise<FormikErrors<IGetTaskModel>>;
     project_list: Array<{ id: string; project_title: string; color: string; }>;
-    sub_task:{
+    sub_task: {
         handler_open_sub_task_modal: () => void;
         open_sub_task_modal: boolean;
         handler_close_sub_task_modal: () => void;
@@ -62,6 +70,19 @@ export interface IFormModel {
         handleChange: (e: any) => void;
         handleBlur: (e: any) => void;
         task_form_data: ISubTaskModel;
+    };
+    edit_sub_task: {
+        open_edit_sub_task_modal: boolean;
+        handler_onView_more: (id: string) => void;
+        open_more_list: boolean;
+        action_delete_sub_task: (id: string) => void;
+        edit_list: string;
+        handler_open_edit_sub_task_modal: (id:string) => void;
+        handler_close_edit_sub_task_modal: () => void;
+        action_edit_sub_task: () => void;
+        handleChange: (e: any) => void;
+        handleBlur: (e: any) => void;
+        task_form_data: IEditSubTaskModel;
     }
 }
 
