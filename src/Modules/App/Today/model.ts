@@ -77,13 +77,18 @@ export interface IFormModel {
         open_more_list: boolean;
         action_delete_sub_task: (id: string) => void;
         edit_list: string;
-        handler_open_edit_sub_task_modal: (id:string) => void;
+        handler_open_edit_sub_task_modal: (id: string) => void;
         handler_close_edit_sub_task_modal: () => void;
         action_edit_sub_task: () => void;
         handleChange: (e: any) => void;
         handleBlur: (e: any) => void;
         task_form_data: IEditSubTaskModel;
-    }
+    };
+    handler_on_mouse_over_done_icon: (id:string) => void;
+    handler_on_mouse_out_done_icon: () => void;
+    action_done: (id: string,e:React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+    view_done_icon: boolean;
+    done: string;
 }
 
 

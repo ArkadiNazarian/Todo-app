@@ -70,6 +70,7 @@ export const useContainer = (): IFormModel => {
     }
 
     const action_add_task = (values: ITaskModel) => {
+        console.log(values.project_id)
         addDoc(add_task_collection, {
             task_title: values.task_title,
             description: values.description,

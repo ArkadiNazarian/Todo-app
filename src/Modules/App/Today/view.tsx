@@ -13,6 +13,7 @@ import FlagIcon from '@mui/icons-material/Flag';
 import { StaticDatePicker } from "@mui/x-date-pickers";
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Paper from "@mui/material/Paper";
+import DoneIcon from '@mui/icons-material/Done';
 
 export const View = (props: IFormModel) => (
     <Box>
@@ -33,7 +34,7 @@ export const View = (props: IFormModel) => (
                         props.task_list.map((value, index) => (
                             <Box onClick={() => props.handler_open_task_modal(value.id)} key={index} sx={{ ':hover': { cursor: "pointer", boxShadow: `1px 1px ${getPriorityColor(value.priority)}` }, minWidth: 600, marginBottom: 4, borderBottom: 1, paddingBottom: 1, borderColor: getPriorityColor(value.priority) }}>
                                 <Box sx={{ display: "flex", alignItems: "center", }}>
-                                    <Box sx={{ width: "15px", height: "15px", borderRadius: 4, marginRight: 2, background: getPriorityColor(value.priority) }}></Box>
+                                    <Box onClick={(e) => props.action_done(value.id, e)} onMouseOver={() => props.handler_on_mouse_over_done_icon(value.id)} onMouseOut={() => props.handler_on_mouse_out_done_icon()} sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: "25px", height: "25px", borderRadius: 4, marginRight: 2, background: getPriorityColor(value.priority) }}><DoneIcon fontSize="small" sx={{ display: (props.view_done_icon && props.done === value.id) ? "" : "none" }} /></Box>
                                     <Typography fontSize={20}>{value.task_title}</Typography>
                                 </Box>
                                 <Typography fontSize={16} sx={{ marginLeft: 5 }} color="#00000099">{value.description}</Typography>
@@ -94,7 +95,7 @@ export const View = (props: IFormModel) => (
                                                 <MoreHorizIcon onClick={() => props.edit_sub_task.handler_onView_more(value.id)} />
                                                 {
                                                     (props.edit_sub_task.open_more_list && props.edit_sub_task.edit_list === value.id) && <Paper sx={{ position: "absolute", right: -1, top: 30, padding: 1, zIndex: 1 }}>
-                                                        <Typography onClick={()=>props.edit_sub_task.handler_open_edit_sub_task_modal(value.id)}>Edit</Typography>
+                                                        <Typography onClick={() => props.edit_sub_task.handler_open_edit_sub_task_modal(value.id)}>Edit</Typography>
                                                         <Typography color="#FF0000" onClick={() => props.edit_sub_task.action_delete_sub_task(value.id)}>Delete</Typography>
                                                     </Paper>
                                                 }

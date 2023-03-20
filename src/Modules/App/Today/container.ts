@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { arrayRemove, arrayUnion, collection, doc, getDoc, onSnapshot, query, updateDoc, where } from "firebase/firestore";
+import { arrayRemove, arrayUnion, collection, deleteDoc, doc, getDoc, onSnapshot, query, updateDoc, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -29,7 +29,9 @@ export const useContainer = (): IFormModel => {
     const [open_sub_task_modal, set_open_sub_task_modal] = useState<boolean>(false);
     const [open_more_list, set_open_more_list] = useState<boolean>(false);
     const [edit_list, set_edit_list] = useState<string>("");
+    const [done, set_done] = useState<string>("");
     const [open_edit_sub_task_modal, set_open_edit_sub_task_modal] = useState<boolean>(false);
+    const [view_done_icon, set_view_done_icon] = useState<boolean>(false);
 
     useEffect(() => {
         const get_month = new Date().getMonth();
@@ -336,13 +338,12 @@ export const useContainer = (): IFormModel => {
         validationSchema: sub_task_validation_schema,
         onSubmit: action_add_sub_task
     });
-    
+
     const handler_onView_more = (id: string) => {
-       
-        
         set_open_more_list(open_more_list => !open_more_list);
         set_edit_list(id)
     }
+
     const action_delete_sub_task = (id: string) => {
         const get_task_details = doc(db, "tasks", task_id);
         const modified_sub_task = task_details?.sub_task?.find((value, index) => value.id === id);
@@ -458,6 +459,24 @@ export const useContainer = (): IFormModel => {
         set_open_edit_sub_task_modal(false);
     }
 
+    const handler_on_mouse_over_done_icon = (id:string) => {
+        set_done(id)
+        set_view_done_icon(true)
+    }
+
+    const handler_on_mouse_out_done_icon = () => {
+        set_view_done_icon(false)
+    }
+
+    const action_done=(id:string,e:React.MouseEvent<HTMLDivElement, MouseEvent>)=>{
+e.stopPropagation()
+        deleteDoc(doc(db,"tasks",id))
+        .catch((command_result)=>{
+            toast.error(command_result.message, {
+                position: toast.POSITION.TOP_RIGHT
+            })
+        })
+    }
 
     return {
         task_list,
@@ -502,7 +521,12 @@ export const useContainer = (): IFormModel => {
             task_form_data: edit_sub_task_formik.values,
             handleChange: edit_sub_task_formik.handleChange,
             handleBlur: edit_sub_task_formik.handleBlur
-        }
+        },
+        handler_on_mouse_over_done_icon,
+        done,
+        handler_on_mouse_out_done_icon,
+        action_done,
+        view_done_icon
     }
 
 }
