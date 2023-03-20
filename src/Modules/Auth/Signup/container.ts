@@ -33,7 +33,6 @@ const action_submit = (values: IModel) => {
     createUserWithEmailAndPassword(auth, values.email, values.password)
         .then((command_result) => {
             const user = command_result.user;
-            console.log(user.uid)
             updateProfile(user, {
                 displayName: values.name
             })
