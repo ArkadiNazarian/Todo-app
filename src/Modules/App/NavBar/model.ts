@@ -1,5 +1,5 @@
 export interface IFormModel {
-    name?: string;
+    avatar_name?: string;
     toggle_menu: () => void;
     handler_onView_account: () => void;
     handler_open_profile_modal: () => void;
@@ -14,7 +14,7 @@ export interface IFormModel {
     user_info: {
         full_name?: string;
         email?: string;
-    }
+    };
     reauthenticate: {
         open_reauthenticate_modal: boolean;
         handler_close_reauthenticate_modal: () => void;
@@ -22,7 +22,17 @@ export interface IFormModel {
         handleChange: (e: any) => void;
         handleBlur: (e: any) => void;
         reauthenticate_form_data: IReauthenticateModal;
-    }
+    };
+    password: {
+        open_password_modal: boolean;
+        handler_close_password_modal: () => void;
+        handler_open_password_modal: () => void;
+        action_submit: () => void;
+        handleChange: (e: any) => void;
+        handleBlur: (e: any) => void;
+        password_form_data: IPasswordModel;
+    };
+    action_delete_user: () => void;
 }
 
 export interface IReauthenticateModal {
@@ -33,4 +43,9 @@ export interface IReauthenticateModal {
 export interface IAccountModel {
     user_name: string;
     email: string;
+}
+
+export interface IPasswordModel {
+    new_password: string;
+    confirm_new_password: string;
 }
