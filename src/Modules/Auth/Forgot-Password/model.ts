@@ -2,9 +2,6 @@ import { FormikErrors } from "formik";
 
 export interface IModel {
     email: string;
-    password: string;
-    name: string;
-    passwordConfirmation: string;
 }
 
 export interface IFormModel {

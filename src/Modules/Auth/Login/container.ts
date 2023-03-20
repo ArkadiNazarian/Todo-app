@@ -49,7 +49,10 @@ export const useContainer = (): IFormModel => {
     };
 
     return {
-        signup_path: app_routes.signup_path,
+        path:{
+            signup: app_routes.signup_path,
+            forgot_password:app_routes.forgot_password_path
+        },
         action_submit: formik.handleSubmit,
         form_data: formik.values,
         form_errors: form_errors,
