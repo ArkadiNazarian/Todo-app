@@ -14,6 +14,7 @@ import { StaticDatePicker } from "@mui/x-date-pickers";
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Paper from "@mui/material/Paper";
 import DoneIcon from '@mui/icons-material/Done';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 
 export const View = (props: IFormModel) => (
     <Box>
@@ -94,9 +95,10 @@ export const View = (props: IFormModel) => (
 
                                                 <MoreHorizIcon onClick={() => props.edit_sub_task.handler_onView_more(value.id)} />
                                                 {
-                                                    (props.edit_sub_task.open_more_list && props.edit_sub_task.edit_list === value.id) && <Paper sx={{ position: "absolute", right: -1, top: 30, padding: 1, zIndex: 1 }}>
-                                                        <Typography onClick={() => props.edit_sub_task.handler_open_edit_sub_task_modal(value.id)}>Edit</Typography>
-                                                        <Typography color="#FF0000" onClick={() => props.edit_sub_task.action_delete_sub_task(value.id)}>Delete</Typography>
+                                                    (props.edit_sub_task.open_more_list && props.edit_sub_task.edit_list === value.id) && <Paper sx={{ position: "absolute", right: -1, top: 30, padding: 1, zIndex: 1,boxShadow: "10px 3px 5px -1px rgb(0 0 0 / 20%),0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%)", }}>
+                                                        <Typography color="#58e312" onClick={() => props.edit_sub_task.action_delete_sub_task(value.id)} sx={{ ':hover': { background: "#00000099" }, cursor: "pointer", marginBottom: 1, padding: 1, borderRadius: 2 }}>Done</Typography>
+                                                        <Typography onClick={() => props.edit_sub_task.handler_open_edit_sub_task_modal(value.id)} sx={{ ':hover': { background: "#00000099" }, cursor: "pointer", marginBottom: 1, padding: 1, borderRadius: 2 }}>Edit</Typography>
+                                                        <Typography color="#FF0000" onClick={() => props.edit_sub_task.action_delete_sub_task(value.id)} sx={{ ':hover': { background: "#00000099" }, cursor: "pointer", marginBottom: 1, padding: 1, borderRadius: 2 }}>Delete</Typography>
                                                     </Paper>
                                                 }
                                             </Box>
@@ -105,7 +107,7 @@ export const View = (props: IFormModel) => (
                                     </Box>
                                 ))
                             }
-                            <Button onClick={() => props.sub_task.handler_open_sub_task_modal()}>+ Add sub-task</Button>
+                            <Button onClick={() => props.sub_task.handler_open_sub_task_modal()} sx={{ marginTop: 2 }}>+ Add sub-task</Button>
                         </Box>
                     </Box>
                     <Box sx={{ background: "#00000011", height: "50vh", width: 200, borderRadius: 2, marginTop: 4, padding: 2, position: "relative" }}>
@@ -134,7 +136,7 @@ export const View = (props: IFormModel) => (
                                         </FormControl>
                                     </form>
                                     :
-                                    <Typography onClick={() => props.handler_onEdit_due_date()} fontSize={12} color="#00000099" sx={{ display: "flex", alignItems: "center" }}><InsertInvitationOutlinedIcon fontSize="small" sx={{ color: "#058527", marginRight: 1 }} />Today</Typography>
+                                    <Typography onClick={() => props.handler_onEdit_due_date()} fontSize={12} color="#00000099" sx={{ display: "flex", alignItems: "center" }}><InsertInvitationOutlinedIcon fontSize="small" sx={{ color: "#058527", marginRight: 1 }} />{props.form_data?.due_date}</Typography>
                             }
 
                         </Box>
@@ -144,7 +146,7 @@ export const View = (props: IFormModel) => (
                                 <Typography fontSize={12} color="#00000099" sx={{ display: "flex", alignItems: "center" }}><FlagIcon fontSize="small" sx={{ color: props.task_details?.priority_color, marginRight: 1 }} />{props.task_details?.priority_title}</Typography>
                                 {
                                     props.edit.edit_priority &&
-                                    <Box sx={{ position: "absolute", background: "#ffffff", padding: 1, borderRadius: 2, left: 1, top: 30, boxShadow: "10px 3px 5px -1px rgb(0 0 0 / 20%),0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%)" }}>
+                                    <Box sx={{ position: "absolute", background: "#ffffff", padding: 1, borderRadius: 2, left: 1, top: 30, boxShadow: "10px 3px 5px -1px rgb(0 0 0 / 20%),0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%)", zIndex: 1 }}>
                                         {
                                             props.priority_list.map((value, index) => (
                                                 <Typography onClick={() => props.handler_update_priority(value.value)} sx={{ ':hover': { background: "#00000099" }, cursor: "pointer", display: "flex", alignItems: "center", marginBottom: 1, padding: 1, borderRadius: 2 }} key={index}><FlagIcon sx={{ color: value.priority_color }} />{value.priority_title}</Typography>
@@ -155,6 +157,7 @@ export const View = (props: IFormModel) => (
                                 }
                             </Box>
                         </Box>
+                        <Button onClick={() => props.action_delete_task(props.form_data.id!)} color="error" sx={{ marginTop: 8 }}><DeleteOutlinedIcon />Delete task</Button>
                     </Box>
                 </Box>
             </Box>

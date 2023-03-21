@@ -72,6 +72,7 @@ export const useContainer = (): IFormModel => {
                     .then((command_result) => {
                         const project_data = command_result.data() as { project_title: string; color: string; };
                         set_task_details({
+                            id: id,
                             task_title: task_data.task_title,
                             description: task_data.description,
                             priority_title: getPriorityTitle(task_data.priority)!,
@@ -459,7 +460,7 @@ export const useContainer = (): IFormModel => {
         set_open_edit_sub_task_modal(false);
     }
 
-    const handler_on_mouse_over_done_icon = (id:string) => {
+    const handler_on_mouse_over_done_icon = (id: string) => {
         set_done(id)
         set_view_done_icon(true)
     }
@@ -468,14 +469,26 @@ export const useContainer = (): IFormModel => {
         set_view_done_icon(false)
     }
 
-    const action_done=(id:string,e:React.MouseEvent<HTMLDivElement, MouseEvent>)=>{
-e.stopPropagation()
-        deleteDoc(doc(db,"tasks",id))
-        .catch((command_result)=>{
-            toast.error(command_result.message, {
-                position: toast.POSITION.TOP_RIGHT
+    const action_done = (id: string, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        e.stopPropagation()
+        deleteDoc(doc(db, "tasks", id))
+            .catch((command_result) => {
+                toast.error(command_result.message, {
+                    position: toast.POSITION.TOP_RIGHT
+                })
             })
-        })
+    }
+
+    const action_delete_task = (id: string) => {
+        deleteDoc(doc(db, "tasks", id))
+            .then(() => {
+                set_open_task_modal(false);
+            })
+            .catch((command_result) => {
+                toast.error(command_result.message, {
+                    position: toast.POSITION.TOP_RIGHT
+                })
+            })
     }
 
     return {
@@ -526,7 +539,8 @@ e.stopPropagation()
         done,
         handler_on_mouse_out_done_icon,
         action_done,
-        view_done_icon
+        view_done_icon,
+        action_delete_task
     }
 
 }

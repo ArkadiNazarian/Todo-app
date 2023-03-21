@@ -13,6 +13,7 @@ export interface IGetTaskModel {
 }
 
 export interface ISetTaskModel {
+    id?: string;
     task_title?: string;
     description?: string;
     priority_color?: string;
@@ -62,6 +63,7 @@ export interface IFormModel {
     handler_onEdit_project: () => void;
     setFieldValue: (field: string, value: any, shouldValidate?: boolean | undefined) => Promise<void> | Promise<FormikErrors<IGetTaskModel>>;
     project_list: Array<{ id: string; project_title: string; color: string; }>;
+    action_delete_task: (id: string) => void;
     sub_task: {
         handler_open_sub_task_modal: () => void;
         open_sub_task_modal: boolean;
@@ -84,9 +86,9 @@ export interface IFormModel {
         handleBlur: (e: any) => void;
         task_form_data: IEditSubTaskModel;
     };
-    handler_on_mouse_over_done_icon: (id:string) => void;
+    handler_on_mouse_over_done_icon: (id: string) => void;
     handler_on_mouse_out_done_icon: () => void;
-    action_done: (id: string,e:React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+    action_done: (id: string, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
     view_done_icon: boolean;
     done: string;
 }
