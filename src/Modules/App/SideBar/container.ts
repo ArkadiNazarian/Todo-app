@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { IFormModel, IProjectModel, ITaskModel } from "./model";
 import *as yup from 'yup';
 import { useFormik } from "formik";
@@ -7,7 +7,7 @@ import { db } from "../../../Firebase/firbase-config";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { getAccountSelector } from "../../Auth/redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { route_names } from "../../../Routes/route-name";
 import * as enums from "../../../Enums/enums";
 
@@ -16,6 +16,26 @@ export const useContainer = (): IFormModel => {
     const user_data = useSelector(getAccountSelector);
     const navigate = useNavigate();
     const app_routes = route_names();
+    const location = useLocation();
+    const [on_today, set_on_today] = useState(true);
+    const [on_inbox, set_on_inbox] = useState(false);
+    useEffect(() => {
+        switch (location.pathname) {
+            case app_routes.inbox_path:
+                set_on_inbox(true);
+                set_on_today(false);
+                break;
+            case app_routes.today_path:
+                set_on_inbox(false);
+                set_on_today(true);
+                break;
+            default:
+                set_on_inbox(false);
+                set_on_today(true);
+                break;
+        }
+         // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     const add_task_collection = collection(db, "tasks");
     const get_project_collection = query(collection(db, "project"), where("user_id", "==", user_data.token));
@@ -24,8 +44,6 @@ export const useContainer = (): IFormModel => {
     const [open_task_modal, set_open_task_modal] = useState(false);
     const [open_project_modal, set_open_project_modal] = useState(false);
     const [project_list, set_project_list] = useState<Array<{ id: string, color: string, project_title: string }>>([]);
-    const [on_today, set_on_today] = useState(true);
-    const [on_inbox, set_on_inbox] = useState(false);
 
     const task_validation_schema = yup.object().shape({
         task_title: yup.string().required(),
@@ -104,7 +122,7 @@ export const useContainer = (): IFormModel => {
                 toast.success("Project was added successfully", {
                     position: toast.POSITION.TOP_RIGHT
                 })
-                project_formik.setValues({ project_title: "", color: "#808080"});
+                project_formik.setValues({ project_title: "", color: "#808080" });
             })
             .catch((command_result) => {
                 handler_close_project_modal();
@@ -127,16 +145,18 @@ export const useContainer = (): IFormModel => {
     });
 
     const goto_today = () => {
-        set_on_today(true);
-        set_on_inbox(false);
+        // set_on_today(true);
+        // set_on_inbox(false);
         navigate(app_routes.today_path);
     }
 
     const goto_inbox = () => {
-        set_on_inbox(true);
-        set_on_today(false);
+        // set_on_inbox(true);
+        // set_on_today(false);
         navigate(app_routes.inbox_path);
     }
+
+
 
     onSnapshot(get_project_collection, (snapshot) => {
         const array = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })) as Array<{ id: string, color: string, project_title: string }>;

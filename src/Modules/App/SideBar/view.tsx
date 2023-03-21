@@ -18,9 +18,9 @@ export const View = (props: IFormModel) => (
             <Box sx={{ position: "absolute", top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, borderRadius: 2, boxShadow: 24, p: 4, background: "#ffffff" }}>
                 <form onSubmit={props.task.action_add_task}>
                     <FormGroup>
-                        <TextField type="text" placeholder="Task name" variant="standard" name="task_title" value={props.task.task_form_data.task_title} onChange={props.task.handleChange} onBlur={props.task.handleBlur} />
+                        <TextField type="text" placeholder="Task name*" variant="standard" name="task_title" value={props.task.task_form_data.task_title} onChange={props.task.handleChange} onBlur={props.task.handleBlur} />
                         <TextField type="text" sx={{ marginTop: 2 }} placeholder="Description" variant="standard" name="description" value={props.task.task_form_data.description} onChange={props.task.handleChange} onBlur={props.task.handleBlur} />
-                        <DatePicker label="Due date" sx={{ marginTop: 5, width: 200 }} value={props.task.task_form_data.due_date} onChange={(value) => props.task.setFieldValue('due_date', value)} />
+                        <DatePicker label="Due date*" sx={{ marginTop: 5, width: 200 }} value={props.task.task_form_data.due_date} onChange={(value) => props.task.setFieldValue('due_date', value)} />
                     </FormGroup>
                     <FormControl sx={{ marginTop: 3, minWidth: 120 }}>
                         <InputLabel>Priority</InputLabel>
@@ -59,7 +59,7 @@ export const View = (props: IFormModel) => (
                 <form onSubmit={props.project.action_add_project} >
                     <Typography variant="h6" sx={{ marginBottom: 3, color: "#1976d2" }}>Add project</Typography>
                     <FormGroup>
-                        <TextField type="text" placeholder="Project name" variant="standard" name="project_title" value={props.project.project_form_data.project_title} onChange={props.project.handleChange} onBlur={props.project.handleBlur} />
+                        <TextField type="text" placeholder="Project name*" variant="standard" name="project_title" value={props.project.project_form_data.project_title} onChange={props.project.handleChange} onBlur={props.project.handleBlur} />
                     </FormGroup>
                     <FormControl sx={{ marginTop: 3, minWidth: 220 }} id="color_dropdown">
                         <InputLabel >Color</InputLabel>
