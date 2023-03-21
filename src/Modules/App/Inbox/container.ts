@@ -16,7 +16,7 @@ export const useContainer = (): IFormModel => {
 
     const user_data = useSelector(getAccountSelector);
 
-    const get_tasks_collection = query(collection(db, "tasks"), where("user_id", "==", user_data.token), where("due_date", "==", dayjs().format("DD-MM-YYYY")));
+    const get_tasks_collection = query(collection(db, "tasks"), where("user_id", "==", user_data.token));
     const get_projects_collection = query(collection(db, "project"), where("user_id", "==", user_data.token));
 
     const [task_list, set_task_list] = useState<Array<IGetTaskModel>>([]);

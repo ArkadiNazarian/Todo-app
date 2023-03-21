@@ -3,6 +3,7 @@ import { SignUp } from "../Modules/Auth/Signup";
 import { Login } from "../Modules/Auth/Login";
 import { Today } from "../Modules/App/Today";
 import { ForgotPassword } from "../Modules/Auth/Forgot-Password";
+import { Inbox } from "../Modules/App/Inbox";
 
 export const routes = () => {
     const app_routes = route_names();
@@ -32,6 +33,10 @@ export const routes = () => {
             path: app_routes.today_path,
             component: <Today />
         },
+        {
+            path: app_routes.inbox_path,
+            component: <Inbox />
+        }
     ];
 
     return {
