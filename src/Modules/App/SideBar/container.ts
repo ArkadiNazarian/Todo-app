@@ -17,8 +17,9 @@ export const useContainer = (): IFormModel => {
     const navigate = useNavigate();
     const app_routes = route_names();
     const location = useLocation();
-    const [on_today, set_on_today] = useState(true);
+    const [on_today, set_on_today] = useState(false);
     const [on_inbox, set_on_inbox] = useState(false);
+    
     useEffect(() => {
         switch (location.pathname) {
             case app_routes.inbox_path:
@@ -35,7 +36,7 @@ export const useContainer = (): IFormModel => {
                 break;
         }
          // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [location])
 
     const add_task_collection = collection(db, "tasks");
     const get_project_collection = query(collection(db, "project"), where("user_id", "==", user_data.token));
@@ -145,17 +146,12 @@ export const useContainer = (): IFormModel => {
     });
 
     const goto_today = () => {
-        // set_on_today(true);
-        // set_on_inbox(false);
         navigate(app_routes.today_path);
     }
 
     const goto_inbox = () => {
-        // set_on_inbox(true);
-        // set_on_today(false);
         navigate(app_routes.inbox_path);
     }
-
 
 
     onSnapshot(get_project_collection, (snapshot) => {

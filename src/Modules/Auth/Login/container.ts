@@ -7,11 +7,13 @@ import { auth } from "../../../Firebase/firbase-config";
 import { useAppDispatch } from "../../../Redux/redux-hooks";
 import { set_token } from "../redux";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export const useContainer = (): IFormModel => {
 
     const app_routes = route_names();
     const dispatch = useAppDispatch();
+    const navigate= useNavigate()
 
     const initial_values: IModel = {
         email: "",
@@ -29,6 +31,7 @@ export const useContainer = (): IFormModel => {
                 dispatch(set_token({
                     token: command_result.user.uid
                 }))
+                navigate(app_routes.today_path)
             })
             .catch((command_result) => {
                 toast.error(command_result.message,{

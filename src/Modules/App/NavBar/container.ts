@@ -9,11 +9,13 @@ import { toast } from "react-toastify";
 import *as yup from 'yup';
 import { useFormik } from "formik";
 import { deleteUser, signInWithEmailAndPassword, updateEmail, updatePassword, updateProfile } from "firebase/auth";
+import { route_names } from "../../../Routes/route-name";
 export const useContainer = (): IFormModel => {
 
     const user_data = useSelector(getAccountSelector);
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
+    const app_routes = route_names();
 
     const [avatar_name, set_avatar_name] = useState("");
     const [view_account, set_view_account] = useState<boolean>(false);
@@ -53,6 +55,7 @@ export const useContainer = (): IFormModel => {
         auth.signOut()
             .then(() => {
                 dispatch(sign_out())
+                navigate(app_routes.login_path)
             })
             .catch((command_result) => {
                 toast.error(command_result.message, {
@@ -193,14 +196,14 @@ export const useContainer = (): IFormModel => {
 
     const action_delete_user = () => {
         deleteUser(auth.currentUser!)
-        .then(()=>{
-            dispatch(set_token({
-                token:""
-            }))
-        })
-        .catch(() => {
-            set_open_reauthenticate_modal(true)
-        })
+            .then(() => {
+                dispatch(set_token({
+                    token: ""
+                }))
+            })
+            .catch(() => {
+                set_open_reauthenticate_modal(true)
+            })
     }
 
     return {

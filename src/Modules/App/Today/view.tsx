@@ -1,7 +1,5 @@
 import { Button, FormControl, FormGroup, InputLabel, MenuItem, Modal, Select, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import { NavBar } from "../NavBar";
-import { SideBar } from "../SideBar";
 import { IFormModel } from "./model";
 import { getPriorityColor } from "../../../Enums/enum-parser";
 import * as enums from "../../../Enums/enums";
@@ -18,11 +16,9 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 
 export const View = (props: IFormModel) => (
     <Box>
-        <NavBar />
+        
         <Box sx={{ display: "flex" }}>
-            <Box>
-                <SideBar />
-            </Box>
+            
             <Box sx={{ width: "100%", marginTop: 7, display: "flex", flexDirection: "column", alignItems: "center", paddingRight: 30 }}>
                 <Box sx={{ marginBottom: 4, display: "flex", flexDirection: "row", alignItems: "center" }}>
                     <Typography variant="h5" fontWeight="bold">Today</Typography>
