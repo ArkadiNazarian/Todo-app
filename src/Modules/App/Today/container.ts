@@ -184,7 +184,6 @@ export const useContainer = (): IFormModel => {
         updateDoc(get_task_details, { task_title: values.task_title, description: values.description, due_date: values.edited_due_date?.format("DD-MM-YYYY") ?? dayjs().format("DD-MM-YYYY") })
             .then(() => {
                 set_task_details({ ...task_details, task_title: values.task_title, description: values.description, edited_due_date: dayjs() ,due_date:values.edited_due_date?.format("DD-MM-YYYY")});
-                console.log(task_details)
                 set_edit({
                     edit_description: false,
                     edit_priority: false,
@@ -194,7 +193,9 @@ export const useContainer = (): IFormModel => {
                 });
             })
             .catch((command_result) => {
-                console.log(command_result)
+                toast.error(command_result.message, {
+                    position: toast.POSITION.TOP_RIGHT
+                })
             })
     }
 
@@ -213,7 +214,9 @@ export const useContainer = (): IFormModel => {
                 });
             })
             .catch((command_result) => {
-                console.log(command_result)
+                toast.error(command_result.message, {
+                    position: toast.POSITION.TOP_RIGHT
+                })
             })
     }
 
@@ -238,7 +241,9 @@ export const useContainer = (): IFormModel => {
 
             })
             .catch((command_result) => {
-                console.log(command_result)
+                toast.error(command_result.message, {
+                    position: toast.POSITION.TOP_RIGHT
+                })
             })
 
     }

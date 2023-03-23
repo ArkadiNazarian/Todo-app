@@ -9,9 +9,9 @@ import CloseIcon from '@mui/icons-material/Close';
 
 export const View = (props: IFormModel) => (
     <Box sx={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between", backgroundColor: "#0372ad", paddingTop: 1, paddingBottom: 1, alignItems: 'center' }}>
-        <Box sx={{ fontSize: "1.5rem", color: "#ffffff", paddingLeft: 2 }}>
-            <MenuIcon onClick={() => props.toggle_menu()} />
-            <HomeOutlinedIcon sx={{ paddingLeft: "1rem" }} />
+        <Box sx={{ fontSize: "1.5rem", color: "#ffffff", paddingLeft: 1 }}>
+            <MenuIcon onClick={() => props.toggle_menu()} sx={{ ':hover': { cursor: "pointer", background: "#4e9cc5" }, marginLeft: "1rem", padding: 0.5, borderRadius: 1 }} />
+            <HomeOutlinedIcon sx={{ ':hover': { cursor: "pointer", background: "#4e9cc5" }, marginLeft: "0.5rem", padding: 0.5, borderRadius: 1 }} onClick={() => props.home()} />
         </Box>
         <Box sx={{ paddingRight: 3, position: "relative" }}>
             <Avatar onClick={() => props.handler_onView_account()} sx={{ width: 34, height: 34, cursor: "pointer" }}>{props.avatar_name}</Avatar>
@@ -46,7 +46,7 @@ export const View = (props: IFormModel) => (
                             <TextField size="small" variant="outlined" name="email" value={props.form_data.email} onBlur={() => props.action_edit()} onChange={props.handleChange}></TextField>
                             <Typography fontWeight="bold" sx={{ marginTop: 2 }}>Password</Typography>
                             <Button variant="contained" sx={{ marginTop: 2, marginRight: 1 }} onClick={() => props.password.handler_open_password_modal()}>Change</Button>
-                            <Button variant="contained" sx={{marginTop:8,width:"180px"}} onClick={() => props.action_delete_user()} color="error">Delete account</Button>
+                            <Button variant="contained" sx={{ marginTop: 8, width: "180px" }} onClick={() => props.action_delete_user()} color="error">Delete account</Button>
                         </FormControl>
                     </form>
                 </Box>

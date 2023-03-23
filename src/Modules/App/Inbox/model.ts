@@ -44,7 +44,6 @@ export interface IEditSubTaskModel {
 export interface IFormModel {
     task_list: Array<IGetTaskModel>;
     task_details?: ISetTaskModel;
-    date?: { month: string; week_day: string; day: number };
     open_task_modal: boolean;
     handler_open_task_modal: (id: string) => void;
     handler_close_task_modal: () => void;
@@ -91,13 +90,6 @@ export interface IFormModel {
     action_done: (id: string, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
     view_done_icon: boolean;
     done: string;
-}
-
-
-export interface IDateModel {
-    month: string;
-    week_day: string;
-    day: number
 }
 
 export interface IEditModel {

@@ -20,11 +20,8 @@ export const View = (props: IFormModel) => (
         <Box sx={{ display: "flex" }}>
             
             <Box sx={{ width: "100%", marginTop: 7, display: "flex", flexDirection: "column", alignItems: "center", paddingRight: 30 }}>
-                <Box sx={{ marginBottom: 4, display: "flex", flexDirection: "row", alignItems: "center" }}>
-                    <Typography variant="h5" fontWeight="bold">Today</Typography>
-                    <Typography sx={{ marginLeft: 1 }} fontSize={14}>{props.date?.week_day}</Typography>
-                    <Typography sx={{ marginLeft: 1 }} fontSize={14}>{props.date?.day}</Typography>
-                    <Typography sx={{ marginLeft: 1 }} fontSize={14}>{props.date?.month}</Typography>
+                <Box sx={{ marginBottom: 4, display: "flex", flexDirection: "row", alignItems: "center",paddingRight:70 }}>
+                    <Typography variant="h5" fontWeight="bold">Inbox</Typography>
                 </Box>
                 <Box>
                     {
@@ -79,7 +76,7 @@ export const View = (props: IFormModel) => (
                         }
                         <Box sx={{ marginLeft: 4 }}>
                             {
-                                props.task_details?.sub_task?.length !== undefined && <Typography fontSize={15} sx={{ marginTop: 4, marginBottom: 2 }}>Sub-tasks</Typography>
+                                (props.task_details?.sub_task?.length !== undefined && props.task_details?.sub_task?.length !==0) && <Typography fontSize={15} sx={{ marginTop: 4, marginBottom: 2 }}>Sub-tasks</Typography>
                             }
                             {
                                 props.task_details?.sub_task?.map((value, index) => (

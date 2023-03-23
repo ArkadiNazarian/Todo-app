@@ -1,8 +1,9 @@
-import { Box } from '@mui/material';
+import { Box, Slide } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { NavBar } from './Modules/App/NavBar';
+import { getUISelector } from './Modules/App/redux';
 import { SideBar } from './Modules/App/SideBar';
 import { getAccountSelector, get_identity } from './Modules/Auth/redux';
 import { useAppDispatch } from './Redux/redux-hooks';
@@ -11,10 +12,12 @@ import { Routes as PublicRoutes, PrivateRoutes } from './Routes/custom-routes';
 import { route_names } from './Routes/route-name';
 
 export function App() {
+
   const app_routes = routes();
   const route = route_names();
   const my_location = window.location.pathname;
   const user_data = useSelector(getAccountSelector);
+  const ui_data = useSelector(getUISelector);
   const dispatch = useAppDispatch();
   const [location, set_location] = useState("");
 
@@ -31,11 +34,11 @@ export function App() {
   return (
     <BrowserRouter>
       {
-        (location !== route.login_path && location !== route.signup_path && location !== route.forgot_password_path ) && <NavBar />
+        (location !== route.login_path && location !== route.signup_path && location !== route.forgot_password_path) && <NavBar />
       }
       <Box sx={{ display: (location !== route.login_path && location !== route.signup_path && location !== route.forgot_password_path) ? "flex" : "", alignItems: (location !== route.login_path || location !== route.signup_path || location !== route.forgot_password_path) ? "flex-start" : "" }}>
         {
-          (location !== route.login_path && location !== route.signup_path && location !== route.forgot_password_path) && <SideBar />
+          (location !== route.login_path && location !== route.signup_path && location !== route.forgot_password_path) && <Slide in={ui_data.sidebar_is_on} direction="right" ><Box><SideBar/></Box></Slide>
         }
         <Box sx={{ display: (location !== route.login_path && location !== route.signup_path && location !== route.forgot_password_path) ? "flex" : "", width: "100%", justifyContent: (location !== route.login_path && location !== route.signup_path && location !== route.forgot_password_path) ? "center" : "" }}>
           <Routes>

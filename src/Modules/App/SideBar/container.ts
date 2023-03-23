@@ -10,6 +10,7 @@ import { getAccountSelector } from "../../Auth/redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { route_names } from "../../../Routes/route-name";
 import * as enums from "../../../Enums/enums";
+import dayjs from "dayjs";
 
 export const useContainer = (): IFormModel => {
 
@@ -19,7 +20,12 @@ export const useContainer = (): IFormModel => {
     const location = useLocation();
     const [on_today, set_on_today] = useState(false);
     const [on_inbox, set_on_inbox] = useState(false);
-    
+    const [tasks_inbox_number, set_tasks_inbox_number] = useState<number>();
+    const [tasks_today_number, set_tasks_today_number] = useState<number>();
+
+    const get_tasks_today_collection = query(collection(db, "tasks"), where("user_id", "==", user_data.token), where("due_date", "==", dayjs().format("DD-MM-YYYY")));
+    const get_tasks_inbox_collection = query(collection(db, "tasks"), where("user_id", "==", user_data.token));
+
     useEffect(() => {
         switch (location.pathname) {
             case app_routes.inbox_path:
@@ -35,7 +41,7 @@ export const useContainer = (): IFormModel => {
                 set_on_today(true);
                 break;
         }
-         // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location])
 
     const add_task_collection = collection(db, "tasks");
@@ -159,6 +165,16 @@ export const useContainer = (): IFormModel => {
         set_project_list(array);
     })
 
+    onSnapshot(get_tasks_today_collection, (snapshot) => {
+        const task_lists = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
+        set_tasks_today_number(task_lists.length)
+    })
+
+    onSnapshot(get_tasks_inbox_collection, (snapshot) => {
+        const task_lists = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
+        set_tasks_inbox_number(task_lists.length)
+    })
+
     return {
         task: {
             open_task_modal,
@@ -184,7 +200,8 @@ export const useContainer = (): IFormModel => {
         goto_today,
         goto_inbox,
         on_today,
-        on_inbox
-
+        on_inbox,
+        tasks_inbox_number,
+        tasks_today_number
     }
 }

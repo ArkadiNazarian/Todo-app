@@ -10,12 +10,14 @@ import *as yup from 'yup';
 import { useFormik } from "formik";
 import { deleteUser, signInWithEmailAndPassword, updateEmail, updatePassword, updateProfile } from "firebase/auth";
 import { route_names } from "../../../Routes/route-name";
+import { getUISelector, sidebar } from "../redux";
 export const useContainer = (): IFormModel => {
 
     const user_data = useSelector(getAccountSelector);
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const app_routes = route_names();
+    const ui_data = useSelector(getUISelector);
 
     const [avatar_name, set_avatar_name] = useState("");
     const [view_account, set_view_account] = useState<boolean>(false);
@@ -44,7 +46,13 @@ export const useContainer = (): IFormModel => {
     }, [user_data])
 
     const toggle_menu = () => {
-        navigate("/")
+        dispatch(sidebar({
+            sidebar_is_on: !ui_data.sidebar_is_on
+        }))
+    }
+
+    const home = () => {
+        navigate(app_routes.today_path);
     }
 
     const handler_onView_account = () => {
@@ -209,6 +217,7 @@ export const useContainer = (): IFormModel => {
     return {
         avatar_name,
         toggle_menu,
+        home,
         handler_onView_account,
         action_signout,
         view_account,
