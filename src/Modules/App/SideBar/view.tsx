@@ -1,4 +1,4 @@
-import { Button, Modal, TextField, Typography, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import { Button, Modal, TextField, Typography, FormControl, InputLabel, Select, MenuItem, Paper } from "@mui/material";
 import { Box } from "@mui/system";
 import InboxOutlinedIcon from '@mui/icons-material/InboxOutlined';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
@@ -8,12 +8,15 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import FormGroup from "@mui/material/FormGroup";
 import FlagIcon from '@mui/icons-material/Flag';
 import * as enums from "../../../Enums/enums";
+import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDownOutlined';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 export const View = (props: IFormModel) => (
     <Box sx={{ background: "#0000001a", width: "16rem", paddingLeft: 3, paddingRight: 3, paddingTop: 5, minHeight: "50vh", borderRadius: "0px 0px 6px 0px" }}>
         <Box onClick={() => props.goto_inbox()} sx={{ ':hover': { background: "#00000033", cursor: "pointer" }, background: props.on_inbox ? "#00000033" : "", fontWeight: 'light', padding: 1, marginBottom: 1, borderRadius: 1, height: 1, display: "flex", alignItems: "center", justifyContent: "space-between" }}><Typography sx={{ display: "flex", alignItems: "center" }}><InboxOutlinedIcon sx={{ color: "#0372ad", marginRight: "8px", fontSize: 20 }} />Inbox</Typography><Typography color="#0372ad">{props.tasks_inbox_number}</Typography></Box>
         <Box onClick={() => props.goto_today()} sx={{ ':hover': { background: "#00000033", cursor: "pointer" }, background: props.on_today ? "#00000033" : "", fontWeight: 'light', padding: 1, marginBottom: 1, borderRadius: 1, height: 1, display: "flex", alignItems: "center", justifyContent: "space-between" }}><Typography sx={{ display: "flex", alignItems: "center" }}><CalendarMonthOutlinedIcon sx={{ color: "#058527", marginRight: "8px", fontSize: 20 }} />Today</Typography><Typography color="#dd4b39">{props.tasks_today_number}</Typography></Box>
         <Button onClick={() => props.task.handler_open_task_modal()}>Add task</Button>
+
         <Modal open={props.task.open_task_modal} onClose={() => props.task.handler_close_task_modal()}>
             <Box sx={{ position: "absolute", top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, borderRadius: 2, boxShadow: 24, p: 4, background: "#ffffff" }}>
                 <form onSubmit={props.task.action_add_task}>
@@ -48,12 +51,28 @@ export const View = (props: IFormModel) => (
                 </form>
             </Box>
         </Modal>
-        <Typography sx={{ ':hover': { background: "#00000011", cursor: "pointer" }, fontWeight: 'bold', paddingLeft: 1, paddingRight: 1, marginBottom: 1, marginTop: 4, borderRadius: 1, height: 1, display: "flex", justifyContent: "space-between", alignItems: "center", color: "#00000080" }}>Projects<AddOutlinedIcon onClick={() => props.project.handler_open_project_modal()} /></Typography>
-        {
-            props.project_list.map((value, index) => (
-                <Box key={index} onClick={() => props.handler_project(value.id)} fontSize={17} fontWeight={400} sx={{ ':hover': { background: "#00000033", cursor: "pointer" }, padding: 1, borderRadius: 1, display: "flex", flexDirection: "row", alignItems: "center", marginBottom: 1, background: (props.project_id === value.id && props.on_project) ? "#00000033" : "" }}><Box sx={{ width: "12px", height: "12px", background: value.color, borderRadius: 4, marginRight: 1 }}></Box>{value.project_title}</Box>
-            ))
-        }
+        <Typography sx={{ ':hover': { background: "#00000011", cursor: "pointer" }, fontWeight: 'bold', paddingLeft: 1, paddingRight: 1, marginBottom: 1, marginTop: 4, borderRadius: 1, height: 1, display: "flex", justifyContent: "space-between", alignItems: "center", color: "#00000080" }}>Projects <Typography><KeyboardArrowDownOutlinedIcon onClick={() => props.toggle_projects()} sx={{ transition: 'all 0.3s', transform: `${props.view_projects ? "rotate(0deg)" : "rotate(90deg)"}` }} /><AddOutlinedIcon onClick={() => props.project.handler_open_project_modal()} /></Typography></Typography>
+        <Box sx={{ transition: 'all 0.3s', opacity: props.view_projects ? 1 : 0 }}>
+            {
+                props.project_list.map((value, index) => (
+                    <Box key={index} onClick={() => props.handler_project(value.id)} fontSize={17} fontWeight={400} position="relative">
+                        <Box sx={{ ':hover': { background: "#00000033", cursor: "pointer" }, padding: 1, borderRadius: 1, display: "flex", flexDirection: "row", alignItems: "center",justifyContent:"space-between", marginBottom: 1, background: (props.project_id === value.id && props.on_project) ? "#00000033" : "" }}><Typography sx={{display:"flex",alignItems:"center"}}><Typography sx={{ width: "12px", height: "12px", background: value.color, borderRadius: 4, marginRight: 1 }}></Typography>{value.project_title}</Typography><MoreHorizIcon onClick={() => props.project_menu(value.id)} /></Box>
+                        {
+                            (props.open_project_menu && props.selected_project_id === value.id) && <Paper sx={{ position: "absolute", right: -1, top: 30, padding: 1, zIndex: 1, boxShadow: "10px 3px 5px -1px rgb(0 0 0 / 20%),0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%)", }}>
+                                <Typography color="#58e312" sx={{ ':hover': { background: "#00000099" }, cursor: "pointer", marginBottom: 1, padding: 1, borderRadius: 2 }}>Done</Typography>
+                                <Typography sx={{ ':hover': { background: "#00000099" }, cursor: "pointer", marginBottom: 1, padding: 1, borderRadius: 2 }}>Edit</Typography>
+                                <Typography color="#FF0000" sx={{ ':hover': { background: "#00000099" }, cursor: "pointer", marginBottom: 1, padding: 1, borderRadius: 2 }}>Delete</Typography>
+                            </Paper>
+                        }
+
+                    </Box>
+                ))
+
+            }
+            {
+
+            }
+        </Box>
         <Modal open={props.project.open_project_modal} onClose={() => props.project.handler_close_project_modal()}>
             <Box sx={{ position: "absolute", top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, borderRadius: 2, boxShadow: 24, p: 4, background: "#ffffff" }}>
                 <form onSubmit={props.project.action_add_project} >

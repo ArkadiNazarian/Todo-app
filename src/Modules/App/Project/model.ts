@@ -90,6 +90,7 @@ export interface IFormModel {
     action_done: (id: string, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
     view_done_icon: boolean;
     done: string;
+    project_details?: IGetProjectModel;
 }
 
 export interface IEditModel {
@@ -104,4 +105,9 @@ export interface IPriorityLookup {
     priority_color: string;
     priority_title: string;
     value: enums.Priority;
+}
+
+export interface IGetProjectModel {
+    project_title: string;
+    color: string;
 }
