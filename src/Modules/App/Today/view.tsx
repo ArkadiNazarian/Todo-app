@@ -16,11 +16,11 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 
 export const View = (props: IFormModel) => (
     <Box>
-        
+
         <Box sx={{ display: "flex" }}>
-            
+
             <Box sx={{ width: "100%", marginTop: 7, display: "flex", flexDirection: "column", alignItems: "center", paddingRight: 30 }}>
-                <Box sx={{ marginBottom: 4, display: "flex", flexDirection: "row", alignItems: "center" }}>
+                <Box sx={{ marginBottom: 4, display: "flex", flexDirection: "row", alignItems: "center", paddingRight: 60 }}>
                     <Typography variant="h5" fontWeight="bold">Today</Typography>
                     <Typography sx={{ marginLeft: 1 }} fontSize={14}>{props.date?.week_day}</Typography>
                     <Typography sx={{ marginLeft: 1 }} fontSize={14}>{props.date?.day}</Typography>
@@ -79,7 +79,7 @@ export const View = (props: IFormModel) => (
                         }
                         <Box sx={{ marginLeft: 4 }}>
                             {
-                                props.task_details?.sub_task?.length !== undefined && <Typography fontSize={15} sx={{ marginTop: 4, marginBottom: 2 }}>Sub-tasks</Typography>
+                                (props.task_details?.sub_task?.length !== undefined && props.task_details?.sub_task?.length !==0) && <Typography fontSize={15} sx={{ marginTop: 4, marginBottom: 2 }}>Sub-tasks</Typography>
                             }
                             {
                                 props.task_details?.sub_task?.map((value, index) => (
@@ -91,7 +91,7 @@ export const View = (props: IFormModel) => (
 
                                                 <MoreHorizIcon onClick={() => props.edit_sub_task.handler_onView_more(value.id)} />
                                                 {
-                                                    (props.edit_sub_task.open_more_list && props.edit_sub_task.edit_list === value.id) && <Paper sx={{ position: "absolute", right: -1, top: 30, padding: 1, zIndex: 1,boxShadow: "10px 3px 5px -1px rgb(0 0 0 / 20%),0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%)", }}>
+                                                    (props.edit_sub_task.open_more_list && props.edit_sub_task.edit_list === value.id) && <Paper sx={{ position: "absolute", right: -1, top: 30, padding: 1, zIndex: 1, boxShadow: "10px 3px 5px -1px rgb(0 0 0 / 20%),0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%)", }}>
                                                         <Typography color="#58e312" onClick={() => props.edit_sub_task.action_delete_sub_task(value.id)} sx={{ ':hover': { background: "#00000099" }, cursor: "pointer", marginBottom: 1, padding: 1, borderRadius: 2 }}>Done</Typography>
                                                         <Typography onClick={() => props.edit_sub_task.handler_open_edit_sub_task_modal(value.id)} sx={{ ':hover': { background: "#00000099" }, cursor: "pointer", marginBottom: 1, padding: 1, borderRadius: 2 }}>Edit</Typography>
                                                         <Typography color="#FF0000" onClick={() => props.edit_sub_task.action_delete_sub_task(value.id)} sx={{ ':hover': { background: "#00000099" }, cursor: "pointer", marginBottom: 1, padding: 1, borderRadius: 2 }}>Delete</Typography>

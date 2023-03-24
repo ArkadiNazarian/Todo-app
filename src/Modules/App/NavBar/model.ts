@@ -1,6 +1,7 @@
 export interface IFormModel {
     avatar_name?: string;
     toggle_menu: () => void;
+    home: () => void;
     handler_onView_account: () => void;
     handler_open_profile_modal: () => void;
     handler_close_profile_modal: () => void;
