@@ -40,6 +40,7 @@ const action_submit = (values: IModel) => {
                     addDoc(add_project_collection, {
                         project_title: "🏠Home",
                         color: "#808080",
+                        date: new Date(),
                         user_id: user.uid
                     })
                         .then(() => {

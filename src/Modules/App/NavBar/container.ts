@@ -208,6 +208,7 @@ export const useContainer = (): IFormModel => {
                 dispatch(set_token({
                     token: ""
                 }))
+                navigate(app_routes.login_path)
             })
             .catch(() => {
                 set_open_reauthenticate_modal(true)
