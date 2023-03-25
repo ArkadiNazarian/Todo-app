@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { getPriorityColor, getPriorityTitle } from "../../../Enums/enum-parser";
 import { db } from "../../../Firebase/firbase-config";
 import { getAccountSelector } from "../../Auth/redux";
-import { IEditModel, IFormModel, ISetTaskModel, IPriorityLookup, IGetTaskModel, ISubTaskModel, IEditSubTaskModel } from "./model";
+import { IEditModel, IFormModel, ISetTaskModel, IPriorityLookup, IGetTaskModel, ISubTaskModel, IEditSubTaskModel, IGetProjectModel } from "./model";
 import *as yup from 'yup';
 import { useFormik } from "formik";
 import * as enums from "../../../Enums/enums";
@@ -20,6 +20,7 @@ export const useContainer = (): IFormModel => {
 
     const get_tasks_collection = query(collection(db, "tasks"), where("user_id", "==", user_data.token), where("project_id", "==", project_id));
     const get_projects_collection = query(collection(db, "project"), where("user_id", "==", user_data.token));
+    const get_project_details = doc(db, "project", project_id!);
 
     const [task_list, set_task_list] = useState<Array<IGetTaskModel>>([]);
     const [open_task_modal, set_open_task_modal] = useState<boolean>(false);
@@ -34,6 +35,7 @@ export const useContainer = (): IFormModel => {
     const [done, set_done] = useState<string>("");
     const [open_edit_sub_task_modal, set_open_edit_sub_task_modal] = useState<boolean>(false);
     const [view_done_icon, set_view_done_icon] = useState<boolean>(false);
+    const [project_details, set_project_details] = useState<IGetProjectModel>();
 
     onSnapshot(get_tasks_collection, (snapshot) => {
         const task_lists = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })) as Array<IGetTaskModel>;
@@ -49,6 +51,20 @@ export const useContainer = (): IFormModel => {
         sub_task_formik.setValues({ sub_task_description: "", sub_task_priority: enums.Priority.White, sub_task_title: "", id: "" });
     }
 
+    useEffect(() => {
+        getDoc(get_project_details)
+            .then((command_result) => {
+                const project_data = command_result.data() as IGetProjectModel;
+                set_project_details({
+                    ...project_data
+                })
+            })
+            .catch((command_result) => {
+                toast.error(command_result.message, {
+                    position: toast.POSITION.TOP_RIGHT
+                })
+            })
+    }, [project_id])
 
     const handler_open_task_modal = (id: string) => {
         const get_task_details = doc(db, "tasks", id);
@@ -521,7 +537,8 @@ export const useContainer = (): IFormModel => {
         handler_on_mouse_out_done_icon,
         action_done,
         view_done_icon,
-        action_delete_task
+        action_delete_task,
+        project_details
     }
 
 }

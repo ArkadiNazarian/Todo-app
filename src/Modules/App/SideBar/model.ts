@@ -43,7 +43,12 @@ export interface IFormModel {
     on_inbox: boolean;
     tasks_inbox_number?: number;
     tasks_today_number?: number;
-    handler_project: (project_id:string) => void;
-    project_id:string;
-    on_project:boolean;
+    handler_project: (project_id: string) => void;
+    project_id: string;
+    on_project: boolean;
+    toggle_projects: () => void;
+    view_projects: boolean;
+    project_menu: (project_id: string) => void;
+    open_project_menu: boolean;
+    selected_project_id: string;
 }

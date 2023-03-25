@@ -22,8 +22,11 @@ export const useContainer = (): IFormModel => {
     const [on_inbox, set_on_inbox] = useState(false);
     const [on_project, set_on_project] = useState(false);
     const [project_id, set_project_id] = useState<string>();
+    const [selected_project_id, set_selected_project_id] = useState<string>();
     const [tasks_inbox_number, set_tasks_inbox_number] = useState<number>();
     const [tasks_today_number, set_tasks_today_number] = useState<number>();
+    const [view_projects, set_view_projects] = useState<boolean>(true)
+    const [open_project_menu, set_open_project_menu] = useState<boolean>(false);
 
     const get_tasks_today_collection = query(collection(db, "tasks"), where("user_id", "==", user_data.token), where("due_date", "==", dayjs().format("DD-MM-YYYY")));
     const get_tasks_inbox_collection = query(collection(db, "tasks"), where("user_id", "==", user_data.token));
@@ -185,6 +188,17 @@ export const useContainer = (): IFormModel => {
         set_on_today(false);
     }
 
+
+    const toggle_projects = () => {
+
+        set_view_projects(!view_projects)
+    }
+
+    const project_menu = (id: string) => {
+        set_open_project_menu(!open_project_menu);
+        set_selected_project_id(id);
+    }
+
     return {
         task: {
             open_task_modal,
@@ -215,6 +229,11 @@ export const useContainer = (): IFormModel => {
         tasks_today_number,
         handler_project,
         project_id: project_id!,
-        on_project
+        on_project,
+        toggle_projects,
+        view_projects,
+        open_project_menu,
+        project_menu,
+        selected_project_id:selected_project_id!
     }
 }
