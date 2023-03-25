@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
-import { IFormModel, IProjectModel, ITaskModel } from "./model";
+import { IEditProjectModel, IFormModel, IProjectModel, ITaskModel } from "./model";
 import *as yup from 'yup';
 import { useFormik } from "formik";
-import { addDoc, collection, onSnapshot, orderBy, query, where } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, orderBy, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../../../Firebase/firbase-config";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
@@ -23,6 +23,7 @@ export const useContainer = (): IFormModel => {
     const [on_project, set_on_project] = useState(false);
     const [project_id, set_project_id] = useState<string>();
     const [selected_project_id, set_selected_project_id] = useState<string>();
+    const [edit_project_id, set_edit_project_id] = useState<string>();
     const [tasks_inbox_number, set_tasks_inbox_number] = useState<number>();
     const [tasks_today_number, set_tasks_today_number] = useState<number>();
     const [view_projects, set_view_projects] = useState<boolean>(true)
@@ -53,6 +54,7 @@ export const useContainer = (): IFormModel => {
 
     const [open_task_modal, set_open_task_modal] = useState(false);
     const [open_project_modal, set_open_project_modal] = useState(false);
+    const [open_edit_project_modal, set_open_edit_project_modal] = useState(false);
     const [project_list, set_project_list] = useState<Array<{ id: string, color: string, project_title: string }>>([]);
 
     const task_validation_schema = yup.object().shape({
@@ -65,9 +67,19 @@ export const useContainer = (): IFormModel => {
         color: yup.string()
     });
 
+    const edit_project_validation_schema = yup.object().shape({
+        edit_project_title: yup.string().required(),
+        edit_color: yup.string()
+    });
+
     const project_initial_values: IProjectModel = {
         project_title: "",
         color: "#808080"
+    };
+
+    const edit_project_initial_values: IEditProjectModel = {
+        edit_project_title: "",
+        edit_color: ""
     };
 
     const task_initial_values: ITaskModel = {
@@ -85,6 +97,32 @@ export const useContainer = (): IFormModel => {
 
     const handler_open_project_modal = () => {
         set_open_project_modal(true);
+    }
+
+    const handler_open_edit_project_modal = (id: string) => {
+
+        const get_project_details = doc(db, "project", id);
+        getDoc(get_project_details)
+            .then((command_result) => {
+                const project_data = command_result.data() as IProjectModel;
+                const converted_obj: IEditProjectModel = {
+                    edit_project_title: project_data.project_title,
+                    edit_color: project_data.color
+                }
+                edit_project_formik.setValues(converted_obj)
+            })
+            .catch((command_result) => {
+                toast.error(command_result.message, {
+                    position: toast.POSITION.TOP_RIGHT
+                })
+            })
+
+        set_open_edit_project_modal(true);
+        set_edit_project_id(id)
+    }
+
+    const handler_close_edit_project_modal = () => {
+        set_open_edit_project_modal(false);
     }
 
     const handler_close_task_modal = () => {
@@ -143,6 +181,25 @@ export const useContainer = (): IFormModel => {
             })
     }
 
+    const action_edit_project = (values: IEditProjectModel) => {
+        const get_project_details = doc(db, "project", edit_project_id!);
+
+        updateDoc(get_project_details, {
+            project_title: values.edit_project_title,
+            color: values.edit_color
+        })
+            .then(() => {
+                set_open_edit_project_modal(false);
+            })
+            .catch((command_result) => {
+                toast.error(command_result.message, {
+                    position: toast.POSITION.TOP_RIGHT
+                })
+            })
+    }
+
+
+
     const task_formik = useFormik({
         initialValues: task_initial_values,
         validationSchema: task_validation_schema,
@@ -153,6 +210,12 @@ export const useContainer = (): IFormModel => {
         initialValues: project_initial_values,
         validationSchema: project_validation_schema,
         onSubmit: action_add_project
+    });
+
+    const edit_project_formik = useFormik({
+        initialValues: edit_project_initial_values,
+        validationSchema: edit_project_validation_schema,
+        onSubmit: action_edit_project
     });
 
     const goto_today = () => {
@@ -199,6 +262,31 @@ export const useContainer = (): IFormModel => {
         set_selected_project_id(id);
     }
 
+    const handler_delete_project = async (project_id: string) => {
+        const tasks = query(collection(db, "tasks"), where("project_id", "==", project_id));
+        const querySnapshot = await getDocs(tasks);
+        querySnapshot.forEach((d) => {
+            deleteDoc(doc(db, "tasks", d.id))
+                .then(() => {
+                    set_open_task_modal(false);
+                })
+                .catch((command_result) => {
+                    toast.error(command_result.message, {
+                        position: toast.POSITION.TOP_RIGHT
+                    })
+                })
+        });
+        deleteDoc(doc(db, "project", project_id))
+            .then(() => {
+                set_open_task_modal(false);
+            })
+            .catch((command_result) => {
+                toast.error(command_result.message, {
+                    position: toast.POSITION.TOP_RIGHT
+                })
+            })
+    }
+
     return {
         task: {
             open_task_modal,
@@ -220,6 +308,16 @@ export const useContainer = (): IFormModel => {
             handleBlur: project_formik.handleBlur,
             setFieldValue: project_formik.setFieldValue
         },
+        edit_project: {
+            open_edit_project_modal,
+            handler_open_edit_project_modal,
+            handler_close_edit_project_modal,
+            action_edit_project: edit_project_formik.handleSubmit,
+            edit_project_form_data: edit_project_formik.values,
+            handleChange: edit_project_formik.handleChange,
+            handleBlur: edit_project_formik.handleBlur,
+            setFieldValue: edit_project_formik.setFieldValue
+        },
         project_list,
         goto_today,
         goto_inbox,
@@ -234,6 +332,7 @@ export const useContainer = (): IFormModel => {
         view_projects,
         open_project_menu,
         project_menu,
-        selected_project_id:selected_project_id!
+        selected_project_id: selected_project_id!,
+        handler_delete_project
     }
 }

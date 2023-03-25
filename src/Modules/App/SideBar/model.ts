@@ -15,6 +15,11 @@ export interface IProjectModel {
     color: string;
 }
 
+export interface IEditProjectModel{
+    edit_project_title: string;
+    edit_color: string;
+}
+
 export interface IFormModel {
     task: {
         handler_open_task_modal: () => void;
@@ -36,6 +41,16 @@ export interface IFormModel {
         project_form_data: IProjectModel;
         setFieldValue: (field: string, value: any, shouldValidate?: boolean | undefined) => Promise<void> | Promise<FormikErrors<IProjectModel>>;
     };
+    edit_project: {
+        handler_open_edit_project_modal: (id:string) => void;
+        open_edit_project_modal: boolean;
+        handler_close_edit_project_modal: () => void;
+        action_edit_project: () => void;
+        handleChange: (e: any) => void;
+        handleBlur: (e: any) => void;
+        edit_project_form_data: IEditProjectModel;
+        setFieldValue: (field: string, value: any, shouldValidate?: boolean | undefined) => Promise<void> | Promise<FormikErrors<IEditProjectModel>>;
+    };
     project_list: Array<{ id: string; project_title: string; color: string; }>;
     goto_today: () => void;
     goto_inbox: () => void;
@@ -51,4 +66,5 @@ export interface IFormModel {
     project_menu: (project_id: string) => void;
     open_project_menu: boolean;
     selected_project_id: string;
+    handler_delete_project:(project_id: string)=>void
 }
