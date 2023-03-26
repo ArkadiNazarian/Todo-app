@@ -87,7 +87,7 @@ export interface IFormModel {
     };
     handler_on_mouse_over_done_icon: (id: string) => void;
     handler_on_mouse_out_done_icon: () => void;
-    action_done: (id: string, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+    action_undo: (id: string, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
     view_done_icon: boolean;
     done: string;
 }

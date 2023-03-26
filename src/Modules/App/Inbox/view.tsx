@@ -26,9 +26,9 @@ export const View = (props: IFormModel) => (
                 <Box>
                     {
                         props.task_list.map((value, index) => (
-                            <Box onClick={() => props.handler_open_task_modal(value.id)} key={index} sx={{ ':hover': { cursor: "pointer", boxShadow: `1px 1px ${getPriorityColor(value.priority)}` }, minWidth: 600, marginBottom: 4, borderBottom: 1, paddingBottom: 1, borderColor: getPriorityColor(value.priority) }}>
+                            <Box onClick={() => props.handler_open_task_modal(value.id)} key={index} sx={{ ':hover': { cursor: "pointer", boxShadow: "10px 3px 5px -1px rgb(0 0 0 / 20%),0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%)" }, minWidth: 600, marginBottom: 4, borderBottom: 1, padding: 1, borderColor: "#cfcfcf", borderRadius: 1 }}>
                                 <Box sx={{ display: "flex", alignItems: "center", }}>
-                                    <Box onClick={(e) => props.action_done(value.id, e)} onMouseOver={() => props.handler_on_mouse_over_done_icon(value.id)} onMouseOut={() => props.handler_on_mouse_out_done_icon()} sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: "25px", height: "25px", borderRadius: 4, marginRight: 2, background: getPriorityColor(value.priority) }}><DoneIcon fontSize="small" sx={{ display: (props.view_done_icon && props.done === value.id) ? "" : "none" }} /></Box>
+                                    <Box onClick={(e) => props.action_done(value.id, e)} onMouseOver={() => props.handler_on_mouse_over_done_icon(value.id)} onMouseOut={() => props.handler_on_mouse_out_done_icon()} sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: "25px", height: "25px", borderRadius: 4, marginRight: 2, background: getPriorityColor(value.priority) }}><DoneIcon fontSize="small" sx={{ transition: 'all 0.3s', opacity: (props.view_done_icon && props.done === value.id) ? 1 : 0 }} /></Box>
                                     <Typography fontSize={20}>{value.task_title}</Typography>
                                 </Box>
                                 <Typography fontSize={16} sx={{ marginLeft: 5 }} color="#00000099">{value.description}</Typography>

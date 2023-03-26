@@ -449,14 +449,10 @@ export const useContainer = (): IFormModel => {
         set_view_done_icon(false)
     }
 
-    const action_done = (id: string, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const action_undo = (id: string, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         e.stopPropagation()
-        deleteDoc(doc(db, "tasks", id))
-            .catch((command_result) => {
-                toast.error(command_result.message, {
-                    position: toast.POSITION.TOP_RIGHT
-                })
-            })
+        const get_task_details = doc(db, "tasks", id);
+        updateDoc(get_task_details, { is_done: false })
     }
 
     const action_delete_task = (id: string) => {
@@ -517,7 +513,7 @@ export const useContainer = (): IFormModel => {
         handler_on_mouse_over_done_icon,
         done,
         handler_on_mouse_out_done_icon,
-        action_done,
+        action_undo,
         view_done_icon,
         action_delete_task
     }
