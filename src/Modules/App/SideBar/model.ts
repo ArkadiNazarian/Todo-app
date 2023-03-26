@@ -43,7 +43,7 @@ export interface IFormModel {
         setFieldValue: (field: string, value: any, shouldValidate?: boolean | undefined) => Promise<void> | Promise<FormikErrors<IProjectModel>>;
     };
     edit_project: {
-        handler_open_edit_project_modal: (id: string,e:React.MouseEvent<HTMLSpanElement, MouseEvent>) => void;
+        handler_open_edit_project_modal: (id: string, e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => void;
         open_edit_project_modal: boolean;
         handler_close_edit_project_modal: () => void;
         action_edit_project: () => void;
@@ -55,8 +55,10 @@ export interface IFormModel {
     project_list: Array<{ id: string; project_title: string; color: string; }>;
     goto_today: () => void;
     goto_inbox: () => void;
+    goto_done: () => void;
     on_today: boolean;
     on_inbox: boolean;
+    on_done: boolean;
     tasks_inbox_number?: number;
     tasks_today_number?: number;
     handler_project: (project_id: string) => void;
@@ -67,5 +69,6 @@ export interface IFormModel {
     project_menu: (project_id: string, e: React.MouseEvent<SVGSVGElement, MouseEvent>) => void;
     open_project_menu: boolean;
     selected_project_id: string;
-    handler_delete_project: (project_id: string,e:React.MouseEvent<HTMLSpanElement, MouseEvent>) => void;
+    handler_delete_project: (project_id: string, e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => void;
+    done_number: number;
 }
