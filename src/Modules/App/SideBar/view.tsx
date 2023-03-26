@@ -10,6 +10,8 @@ import FlagIcon from '@mui/icons-material/Flag';
 import * as enums from "../../../Enums/enums";
 import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDownOutlined';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 
 export const View = (props: IFormModel) => (
     <Box sx={{ background: "#0000001a", width: "16rem", paddingLeft: 3, paddingRight: 3, paddingTop: 5, paddingBottom: 2, minHeight: "50vh", borderRadius: "0px 0px 6px 0px" }}>
@@ -56,11 +58,11 @@ export const View = (props: IFormModel) => (
             {
                 props.project_list.map((value, index) => (
                     <Box key={index} onClick={() => props.handler_project(value.id)} fontSize={17} fontWeight={400} position="relative">
-                        <Box sx={{ ':hover': { background: "#00000033", cursor: "pointer" }, padding: 1, borderRadius: 1, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 1, background: (props.project_id === value.id && props.on_project) ? "#00000033" : "" }}><Box sx={{ display: "flex", alignItems: "center" }}><Typography sx={{ width: "12px", height: "12px", background: value.color, borderRadius: 4, marginRight: 1 }}></Typography>{value.project_title}</Box><MoreHorizIcon onClick={() => props.project_menu(value.id)} /></Box>
+                        <Box sx={{ ':hover': { background: "#00000033", cursor: "pointer" }, padding: 1, borderRadius: 1, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 1, background: (props.project_id === value.id && props.on_project) ? "#00000033" : "" }}><Box sx={{ display: "flex", alignItems: "center" }}><Typography sx={{ width: "12px", height: "12px", background: value.color, borderRadius: 4, marginRight: 1 }}></Typography>{value.project_title}</Box><MoreHorizIcon onClick={(e) => props.project_menu(value.id, e)} /></Box>
                         {
                             (props.open_project_menu && props.selected_project_id === value.id) && <Paper sx={{ position: "absolute", right: -1, top: 30, padding: 1, zIndex: 1, boxShadow: "10px 3px 5px -1px rgb(0 0 0 / 20%),0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%)", }}>
-                                <Typography sx={{ ':hover': { background: "#00000099" }, cursor: "pointer", marginBottom: 1, padding: 1, borderRadius: 2 }} onClick={() => props.edit_project.handler_open_edit_project_modal(value.id)}>Edit</Typography>
-                                <Typography color="#FF0000" sx={{ ':hover': { background: "#00000099" }, cursor: "pointer", marginBottom: 1, padding: 1, borderRadius: 2 }} onClick={() => props.handler_delete_project(value.id)}>Delete</Typography>
+                                <Typography sx={{ ':hover': { background: "#00000099" }, cursor: "pointer", padding: 0.5, borderRadius: 2, display: "flex", alignItems: "center" }} onClick={(e) => props.edit_project.handler_open_edit_project_modal(value.id,e)}><EditOutlinedIcon />Edit</Typography>
+                                <Typography color="#FF0000" sx={{ ':hover': { background: "#00000099" }, cursor: "pointer", padding: 0.5, borderRadius: 2, display: "flex", alignItems: "center" }} onClick={(e) => props.handler_delete_project(value.id,e)}><DeleteOutlineOutlinedIcon />Delete</Typography>
                             </Paper>
                         }
                     </Box>

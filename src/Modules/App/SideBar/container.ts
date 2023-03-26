@@ -99,8 +99,8 @@ export const useContainer = (): IFormModel => {
         set_open_project_modal(true);
     }
 
-    const handler_open_edit_project_modal = (id: string) => {
-
+    const handler_open_edit_project_modal = (id: string, e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
+        e.stopPropagation();
         const get_project_details = doc(db, "project", id);
         getDoc(get_project_details)
             .then((command_result) => {
@@ -253,16 +253,17 @@ export const useContainer = (): IFormModel => {
 
 
     const toggle_projects = () => {
-
         set_view_projects(!view_projects)
     }
 
-    const project_menu = (id: string) => {
+    const project_menu = (id: string, e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+        e.stopPropagation()
         set_open_project_menu(!open_project_menu);
         set_selected_project_id(id);
     }
 
-    const handler_delete_project = async (project_id: string) => {
+    const handler_delete_project = async (project_id: string, e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
+        e.stopPropagation();
         const tasks = query(collection(db, "tasks"), where("project_id", "==", project_id));
         const querySnapshot = await getDocs(tasks);
         querySnapshot.forEach((d) => {
@@ -286,6 +287,7 @@ export const useContainer = (): IFormModel => {
                 })
             })
     }
+
 
     return {
         task: {
