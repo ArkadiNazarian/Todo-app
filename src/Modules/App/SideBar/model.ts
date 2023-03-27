@@ -56,7 +56,9 @@ export interface IFormModel {
     goto_today: () => void;
     goto_inbox: () => void;
     goto_done: () => void;
+    goto_calendar: () => void;
     on_today: boolean;
+    on_calendar: boolean;
     on_inbox: boolean;
     on_done: boolean;
     tasks_inbox_number?: number;

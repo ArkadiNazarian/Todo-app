@@ -20,6 +20,7 @@ export const useContainer = (): IFormModel => {
     const location = useLocation();
     const [on_today, set_on_today] = useState(false);
     const [on_inbox, set_on_inbox] = useState(false);
+    const [on_calendar, set_on_calendar] = useState(false);
     const [on_done, set_on_done] = useState(false);
     const [on_project, set_on_project] = useState(false);
     const [project_id, set_project_id] = useState<string>();
@@ -31,7 +32,7 @@ export const useContainer = (): IFormModel => {
     const [view_projects, set_view_projects] = useState<boolean>(true)
     const [open_project_menu, set_open_project_menu] = useState<boolean>(false);
 
-    const get_tasks_today_collection = query(collection(db, "tasks"), where("user_id", "==", user_data.token), where("due_date", "==", dayjs().format("DD-MM-YYYY")), where("is_done", "==", false));
+    const get_tasks_today_collection = query(collection(db, "tasks"), where("user_id", "==", user_data.token), where("due_date", "==", dayjs().format("YYYY-MM-DD")), where("is_done", "==", false));
     const get_tasks_inbox_collection = query(collection(db, "tasks"), where("user_id", "==", user_data.token), where("is_done", "==", false));
     const get_tasks_done_collection = query(collection(db, "tasks"), where("user_id", "==", user_data.token), where("is_done", "==", true));
 
@@ -42,18 +43,28 @@ export const useContainer = (): IFormModel => {
                 set_on_today(false);
                 set_on_project(false);
                 set_on_done(false);
+                set_on_calendar(false);
                 break;
             case app_routes.today_path:
                 set_on_inbox(false);
                 set_on_today(true);
                 set_on_project(false);
                 set_on_done(false);
+                set_on_calendar(false);
                 break;
             case app_routes.done_path:
                 set_on_inbox(false);
                 set_on_today(false);
                 set_on_project(false);
                 set_on_done(true);
+                set_on_calendar(false);
+                break;
+            case app_routes.calendar_path:
+                set_on_inbox(false);
+                set_on_today(false);
+                set_on_project(false);
+                set_on_done(false);
+                set_on_calendar(true);
                 break;
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -150,7 +161,7 @@ export const useContainer = (): IFormModel => {
         addDoc(add_task_collection, {
             task_title: values.task_title,
             description: values.description,
-            due_date: values.due_date?.format("DD-MM-YYYY"),
+            due_date: values.due_date?.format("YYYY-MM-DD"),
             priority: values.priority,
             user_id: user_data.token,
             project_id: values.project_id,
@@ -238,6 +249,10 @@ export const useContainer = (): IFormModel => {
         navigate(app_routes.inbox_path);
     }
 
+    const goto_calendar = () => {
+        navigate(app_routes.calendar_path);
+    }
+
     const goto_done = () => {
         navigate(app_routes.done_path);
     }
@@ -270,6 +285,7 @@ export const useContainer = (): IFormModel => {
         set_on_inbox(false);
         set_on_today(false);
         set_on_done(false);
+        set_on_calendar(false);
     }
 
 
@@ -344,6 +360,7 @@ export const useContainer = (): IFormModel => {
         project_list,
         goto_today,
         goto_inbox,
+        goto_calendar,
         goto_done,
         on_today,
         on_inbox,
@@ -359,6 +376,7 @@ export const useContainer = (): IFormModel => {
         project_menu,
         selected_project_id: selected_project_id!,
         handler_delete_project,
-        done_number: done_number!
+        done_number: done_number!,
+        on_calendar
     }
 }

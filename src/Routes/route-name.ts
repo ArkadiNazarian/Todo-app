@@ -8,6 +8,7 @@ export const route_names = () => {
     const inbox_path = "/app/inbox";
     const done_path = "/app/done";
     const project_path = "/app/project/:project_id";
+    const calendar_path = "/app/calendar";
 
     return {
         login_path,
@@ -17,6 +18,7 @@ export const route_names = () => {
         inbox_path,
         forgot_password_path,
         project_path,
-        done_path
+        done_path,
+        calendar_path
     }
 };

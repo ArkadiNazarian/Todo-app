@@ -16,7 +16,7 @@ export const useContainer = (): IFormModel => {
 
     const user_data = useSelector(getAccountSelector);
 
-    const get_tasks_collection = query(collection(db, "tasks"), where("user_id", "==", user_data.token), where("due_date", "==", dayjs().format("DD-MM-YYYY")), where("is_done", "==", false));
+    const get_tasks_collection = query(collection(db, "tasks"), where("user_id", "==", user_data.token), where("due_date", "==", dayjs().format("YYYY-MM-DD")), where("is_done", "==", false));
     const get_projects_collection = query(collection(db, "project"), where("user_id", "==", user_data.token));
 
     const [task_list, set_task_list] = useState<Array<IGetTaskModel>>([]);
@@ -181,9 +181,9 @@ export const useContainer = (): IFormModel => {
     const action_submit = (values: ISetTaskModel) => {
         const get_task_details = doc(db, "tasks", task_id);
 
-        updateDoc(get_task_details, { task_title: values.task_title, description: values.description, due_date: values.edited_due_date?.format("DD-MM-YYYY") ?? dayjs().format("DD-MM-YYYY") })
+        updateDoc(get_task_details, { task_title: values.task_title, description: values.description, due_date: values.edited_due_date?.format("YYYY-MM-DD") ?? dayjs().format("YYYY-MM-DD") })
             .then(() => {
-                set_task_details({ ...task_details, task_title: values.task_title, description: values.description, edited_due_date: dayjs(), due_date: values.edited_due_date?.format("DD-MM-YYYY") });
+                set_task_details({ ...task_details, task_title: values.task_title, description: values.description, edited_due_date: dayjs(), due_date: values.edited_due_date?.format("YYYY-MM-DD") });
                 set_edit({
                     edit_description: false,
                     edit_priority: false,

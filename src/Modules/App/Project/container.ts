@@ -186,9 +186,9 @@ export const useContainer = (): IFormModel => {
     const action_submit = (values: ISetTaskModel) => {
         const get_task_details = doc(db, "tasks", task_id);
 
-        updateDoc(get_task_details, { task_title: values.task_title, description: values.description, due_date: values.edited_due_date?.format("DD-MM-YYYY") ?? dayjs().format("DD-MM-YYYY") })
+        updateDoc(get_task_details, { task_title: values.task_title, description: values.description, due_date: values.edited_due_date?.format("YYYY-MM-DD") ?? dayjs().format("YYYY-MM-DD") })
             .then(() => {
-                set_task_details({ ...task_details, task_title: values.task_title, description: values.description, edited_due_date: dayjs(), due_date: values.edited_due_date?.format("DD-MM-YYYY") });
+                set_task_details({ ...task_details, task_title: values.task_title, description: values.description, edited_due_date: dayjs(), due_date: values.edited_due_date?.format("YYYY-MM-DD") });
                 set_edit({
                     edit_description: false,
                     edit_priority: false,
