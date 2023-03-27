@@ -13,6 +13,8 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Paper from "@mui/material/Paper";
 import DoneIcon from '@mui/icons-material/Done';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 
 export const View = (props: IFormModel) => (
     <Box>
@@ -87,9 +89,9 @@ export const View = (props: IFormModel) => (
                                                 <MoreHorizIcon onClick={() => props.edit_sub_task.handler_onView_more(value.id)} />
                                                 {
                                                     (props.edit_sub_task.open_more_list && props.edit_sub_task.edit_list === value.id) && <Paper sx={{ position: "absolute", right: -1, top: 30, padding: 1, zIndex: 1, boxShadow: "10px 3px 5px -1px rgb(0 0 0 / 20%),0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%)", }}>
-                                                        <Typography color="#58e312" onClick={() => props.edit_sub_task.action_delete_sub_task(value.id)} sx={{ ':hover': { background: "#00000099" }, cursor: "pointer", marginBottom: 1, padding: 1, borderRadius: 2 }}>Done</Typography>
-                                                        <Typography onClick={() => props.edit_sub_task.handler_open_edit_sub_task_modal(value.id)} sx={{ ':hover': { background: "#00000099" }, cursor: "pointer", marginBottom: 1, padding: 1, borderRadius: 2 }}>Edit</Typography>
-                                                        <Typography color="#FF0000" onClick={() => props.edit_sub_task.action_delete_sub_task(value.id)} sx={{ ':hover': { background: "#00000099" }, cursor: "pointer", marginBottom: 1, padding: 1, borderRadius: 2 }}>Delete</Typography>
+                                                        <Typography color="#58e312" onClick={() => props.edit_sub_task.action_delete_sub_task(value.id)} sx={{ ':hover': { background: "#00000099" }, cursor: "pointer", padding: 0.5, borderRadius: 1, display: "flex", alignItems: "center" }}><DoneIcon />Done</Typography>
+                                                        <Typography onClick={() => props.edit_sub_task.handler_open_edit_sub_task_modal(value.id)} sx={{ ':hover': { background: "#00000099" }, cursor: "pointer", padding: 0.5, borderRadius: 1, display: "flex", alignItems: "center" }}><EditOutlinedIcon />Edit</Typography>
+                                                        <Typography color="#FF0000" onClick={() => props.edit_sub_task.action_delete_sub_task(value.id)} sx={{ ':hover': { background: "#00000099" }, cursor: "pointer", padding: 0.5, borderRadius: 1, display: "flex", alignItems: "center" }}><DeleteOutlineOutlinedIcon />Delete</Typography>
                                                     </Paper>
                                                 }
                                             </Box>
@@ -108,7 +110,7 @@ export const View = (props: IFormModel) => (
                             <Box sx={{ position: "absolute", zIndex: 1, background: "#ffffff", padding: 1, borderRadius: 2, left: 1, top: 70, boxShadow: "10px 3px 5px -1px rgb(0 0 0 / 20%),0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%)" }}>
                                 {
                                     props.project_list.map((value, index) => (
-                                        <Box onClick={() => props.handler_update_project(value.id)} sx={{ ':hover': { background: "#00000099" }, cursor: "pointer", display: "flex", alignItems: "center", marginBottom: 1, padding: 1, borderRadius: 2 }} key={index}><Box sx={{ width: "12px", height: "12px", background: value.color, borderRadius: 4, marginRight: 1 }}></Box>{value.project_title}</Box>
+                                        <Box onClick={() => props.handler_update_project(value.id)} sx={{ ':hover': { background: "#00000099" }, cursor: "pointer", display: "flex", alignItems: "center", padding: 1, borderRadius: 1 }} key={index}><Box sx={{ width: "12px", height: "12px", background: value.color, borderRadius: 4, marginRight: 1 }}></Box>{value.project_title}</Box>
                                     ))
                                 }
                             </Box>
@@ -139,7 +141,7 @@ export const View = (props: IFormModel) => (
                                     <Box sx={{ position: "absolute", background: "#ffffff", padding: 1, borderRadius: 2, left: 1, top: 30, boxShadow: "10px 3px 5px -1px rgb(0 0 0 / 20%),0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%)", zIndex: 1 }}>
                                         {
                                             props.priority_list.map((value, index) => (
-                                                <Typography onClick={() => props.handler_update_priority(value.value)} sx={{ ':hover': { background: "#00000099" }, cursor: "pointer", display: "flex", alignItems: "center", marginBottom: 1, padding: 1, borderRadius: 2 }} key={index}><FlagIcon sx={{ color: value.priority_color }} />{value.priority_title}</Typography>
+                                                <Typography onClick={() => props.handler_update_priority(value.value)} sx={{ ':hover': { background: "#00000099" }, cursor: "pointer", display: "flex", alignItems: "center", padding: 1, borderRadius: 1 }} key={index}><FlagIcon sx={{ color: value.priority_color }} />{value.priority_title}</Typography>
                                             ))
                                         }
 
