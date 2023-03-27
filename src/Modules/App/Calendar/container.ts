@@ -1,25 +1,25 @@
-import dayjs from "dayjs";
-import { arrayRemove, arrayUnion, collection, deleteDoc, doc, getDoc, onSnapshot, query, updateDoc, where } from "firebase/firestore";
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { toast } from "react-toastify";
-import { getPriorityColor, getPriorityTitle } from "../../../Enums/enum-parser";
 import { db } from "../../../Firebase/firbase-config";
+import { arrayRemove, arrayUnion, collection, deleteDoc, doc, getDoc, onSnapshot, query, updateDoc, where } from "firebase/firestore";
+import { useSelector } from "react-redux";
 import { getAccountSelector } from "../../Auth/redux";
-import { IEditModel, IFormModel, ISetTaskModel, IPriorityLookup, IGetTaskModel, ISubTaskModel, IEditSubTaskModel } from "./model";
+import { ICalendarModel, IEditModel, IEditSubTaskModel, IFormModel, IGetTaskModel, IPriorityLookup, ISetTaskModel, ISubTaskModel } from "./model";
+import { useState } from "react";
+import { useEffect } from "react";
+import * as enums from "../../../Enums/enums";
+import { getPriorityColor, getPriorityTitle } from "../../../Enums/enum-parser";
+import dayjs from "dayjs";
+import { toast } from "react-toastify";
 import *as yup from 'yup';
 import { useFormik } from "formik";
-import * as enums from "../../../Enums/enums";
 import { random } from "../../../SideFunctions/random_id_maker";
 
 export const useContainer = (): IFormModel => {
-
     const user_data = useSelector(getAccountSelector);
 
-    const get_tasks_collection = query(collection(db, "tasks"), where("user_id", "==", user_data.token),where("is_done","==",false));
+    const get_tasks_collection = query(collection(db, "tasks"), where("user_id", "==", user_data.token), where("is_done", "==", false));
     const get_projects_collection = query(collection(db, "project"), where("user_id", "==", user_data.token));
-
-    const [task_list, set_task_list] = useState<Array<IGetTaskModel>>([]);
+    
+    const [task_list, set_task_list] = useState<Array<ICalendarModel>>([]);
     const [open_task_modal, set_open_task_modal] = useState<boolean>(false);
     const [task_details, set_task_details] = useState<ISetTaskModel>();
     const [edit, set_edit] = useState<IEditModel>({ edit_title: false, edit_description: false, edit_priority: false, edit_due_date: false, edit_project: false });
@@ -29,17 +29,36 @@ export const useContainer = (): IFormModel => {
     const [open_sub_task_modal, set_open_sub_task_modal] = useState<boolean>(false);
     const [open_more_list, set_open_more_list] = useState<boolean>(false);
     const [edit_list, set_edit_list] = useState<string>("");
-    const [done, set_done] = useState<string>("");
     const [open_edit_sub_task_modal, set_open_edit_sub_task_modal] = useState<boolean>(false);
-    const [view_done_icon, set_view_done_icon] = useState<boolean>(false);
 
-    onSnapshot(get_tasks_collection, (snapshot) => {
-        const task_lists = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })) as Array<IGetTaskModel>;
-        set_task_list(task_lists)
-    })
+
+    const onCalendarsnapshot = () => {
+        onSnapshot(get_tasks_collection, (snapshot) => {
+            const task_lists = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })) as Array<IGetTaskModel>;
+            const converted_task_list = task_lists.map((value, index) => {
+                return {
+                    title: value.task_title,
+                    date: value.due_date,
+                    id: value.id
+                }
+            })
+            set_task_list(converted_task_list)
+        })
+    }
+
+    useEffect(() => {
+        onCalendarsnapshot()
+    }, [])
+
+
 
     const handler_open_sub_task_modal = () => {
         set_open_sub_task_modal(true);
+        onSnapshot(get_projects_collection, (snapshot) => {
+            const array = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })) as Array<{ id: string, color: string, project_title: string }>;
+            set_project_list(array);
+    
+        })
     }
 
     const handler_close_sub_task_modal = () => {
@@ -170,7 +189,7 @@ export const useContainer = (): IFormModel => {
 
         updateDoc(get_task_details, { task_title: values.task_title, description: values.description, due_date: values.edited_due_date?.format("YYYY-MM-DD") ?? dayjs().format("YYYY-MM-DD") })
             .then(() => {
-                set_task_details({ ...task_details, task_title: values.task_title, description: values.description, edited_due_date: dayjs() ,due_date:values.edited_due_date?.format("YYYY-MM-DD")});
+                set_task_details({ ...task_details, task_title: values.task_title, description: values.description, edited_due_date: dayjs(), due_date: values.edited_due_date?.format("YYYY-MM-DD") });
                 set_edit({
                     edit_description: false,
                     edit_priority: false,
@@ -269,11 +288,7 @@ export const useContainer = (): IFormModel => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [task_details])
 
-    onSnapshot(get_projects_collection, (snapshot) => {
-        const array = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })) as Array<{ id: string, color: string, project_title: string }>;
-        set_project_list(array);
-
-    })
+   
 
     const sub_task_initial_values: ISubTaskModel = {
         sub_task_title: "",
@@ -440,21 +455,6 @@ export const useContainer = (): IFormModel => {
         set_open_edit_sub_task_modal(false);
     }
 
-    const handler_on_mouse_over_done_icon = (id: string) => {
-        set_done(id)
-        set_view_done_icon(true)
-    }
-
-    const handler_on_mouse_out_done_icon = () => {
-        set_view_done_icon(false)
-    }
-
-    const action_done = (id: string, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        e.stopPropagation()
-        const get_task_details = doc(db, "tasks", id);
-        updateDoc(get_task_details, { is_done: true })
-    }
-
     const action_delete_task = (id: string) => {
         deleteDoc(doc(db, "tasks", id))
             .then(() => {
@@ -510,12 +510,6 @@ export const useContainer = (): IFormModel => {
             handleChange: edit_sub_task_formik.handleChange,
             handleBlur: edit_sub_task_formik.handleBlur
         },
-        handler_on_mouse_over_done_icon,
-        done,
-        handler_on_mouse_out_done_icon,
-        action_done,
-        view_done_icon,
         action_delete_task
     }
-
 }

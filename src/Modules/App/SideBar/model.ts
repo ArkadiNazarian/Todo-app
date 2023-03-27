@@ -54,11 +54,13 @@ export interface IFormModel {
     };
     project_list: Array<{ id: string; project_title: string; color: string; }>;
     goto_today: () => void;
+    goto_calendar: () => void;
     goto_inbox: () => void;
     goto_done: () => void;
     on_today: boolean;
     on_inbox: boolean;
     on_done: boolean;
+    on_calendar: boolean;
     tasks_inbox_number?: number;
     tasks_today_number?: number;
     handler_project: (project_id: string) => void;

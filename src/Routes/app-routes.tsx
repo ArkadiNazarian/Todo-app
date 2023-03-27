@@ -6,6 +6,7 @@ import { ForgotPassword } from "../Modules/Auth/Forgot-Password";
 import { Inbox } from "../Modules/App/Inbox";
 import { Project } from "../Modules/App/Project";
 import { Done } from "../Modules/App/Done";
+import { Calendar } from "../Modules/App/Calendar";
 
 export const routes = () => {
     const app_routes = route_names();
@@ -46,6 +47,11 @@ export const routes = () => {
         {
             path: app_routes.done_path,
             component: <Done />
+        }
+        ,
+        {
+            path: app_routes.calendar_path,
+            component: <Calendar />
         }
     ];
 
