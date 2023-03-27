@@ -11,24 +11,25 @@ import FlagIcon from '@mui/icons-material/Flag';
 import { StaticDatePicker } from "@mui/x-date-pickers";
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Paper from "@mui/material/Paper";
-import DoneIcon from '@mui/icons-material/Done';
+import ReplayOutlinedIcon from '@mui/icons-material/ReplayOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import DoneIcon from '@mui/icons-material/Done';
 
 export const View = (props: IFormModel) => (
     <Box>
         <Box sx={{ display: "flex" }}>
             <Box sx={{ width: "100%", marginTop: 7, display: "flex", flexDirection: "column", alignItems: "center", paddingRight: 30 }}>
                 <Box sx={{ marginBottom: 4, display: "flex", flexDirection: "row", alignItems: "center", paddingRight: 70 }}>
-                    <Typography variant="h5" fontWeight="bold">Inbox</Typography>
+                    <Typography variant="h5" fontWeight="bold">ِDone</Typography>
                 </Box>
                 <Box>
                     {
                         props.task_list.map((value, index) => (
                             <Box onClick={() => props.handler_open_task_modal(value.id)} key={index} sx={{ ':hover': { cursor: "pointer", boxShadow: "10px 3px 5px -1px rgb(0 0 0 / 20%),0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%)" }, minWidth: 600, marginBottom: 4, borderBottom: 1, padding: 1, borderColor: "#cfcfcf", borderRadius: 1 }}>
                                 <Box sx={{ display: "flex", alignItems: "center", }}>
-                                    <Box onClick={(e) => props.action_done(value.id, e)} onMouseOver={() => props.handler_on_mouse_over_done_icon(value.id)} onMouseOut={() => props.handler_on_mouse_out_done_icon()} sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: "25px", height: "25px", borderRadius: 4, marginRight: 2, background: getPriorityColor(value.priority) }}><DoneIcon fontSize="small" sx={{ transition: 'all 0.3s', opacity: (props.view_done_icon && props.done === value.id) ? 1 : 0 }} /></Box>
+                                    <Box onClick={(e) => props.action_undo(value.id, e)} onMouseOver={() => props.handler_on_mouse_over_done_icon(value.id)} onMouseOut={() => props.handler_on_mouse_out_done_icon()} sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: "25px", height: "25px", borderRadius: 4, marginRight: 2, background: getPriorityColor(value.priority) }}><ReplayOutlinedIcon fontSize="small" sx={{ transition: 'all 0.3s', opacity: (props.view_done_icon && props.done === value.id) ? 1 : 0 }} /></Box>
                                     <Typography fontSize={20}>{value.task_title}</Typography>
                                 </Box>
                                 <Typography fontSize={16} sx={{ marginLeft: 5 }} color="#00000099">{value.description}</Typography>
@@ -44,6 +45,7 @@ export const View = (props: IFormModel) => (
                     <Typography fontSize={15} color="#00000099" sx={{ display: "flex", alignItems: "center", }}><CalendarMonthOutlinedIcon sx={{ color: "#058527", marginRight: "8px", fontSize: 20 }} />Today</Typography>
                     <CloseIcon onClick={() => props.handler_close_task_modal()} sx={{ ':hover': { cursor: "pointer", background: "#00000022", borderRadius: 1 } }} />
                 </Box>
+
                 <Box sx={{ display: "flex" }}>
                     <Box sx={{ marginTop: 4, width: 600 }}>
                         <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -57,7 +59,9 @@ export const View = (props: IFormModel) => (
                                     </form> :
                                     <Typography fontSize={20} onClick={() => props.handler_onEdit_title()}>{props.task_details?.task_title}</Typography>
                             }
+
                         </Box>
+
                         {
                             props.edit.edit_description ?
                                 <form onSubmit={props.action_submit}>
@@ -128,6 +132,7 @@ export const View = (props: IFormModel) => (
                                     :
                                     <Typography onClick={() => props.handler_onEdit_due_date()} fontSize={12} color="#00000099" sx={{ display: "flex", alignItems: "center" }}><InsertInvitationOutlinedIcon fontSize="small" sx={{ color: "#058527", marginRight: 1 }} />{props.form_data?.due_date}</Typography>
                             }
+
                         </Box>
                         <Box onClick={() => props.handler_onEdit_priority()}>
                             <Typography fontSize={13} color="#00000099" fontWeight="bold" sx={{ marginTop: 1 }}>Priority</Typography>

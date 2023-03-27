@@ -20,17 +20,20 @@ export const useContainer = (): IFormModel => {
     const location = useLocation();
     const [on_today, set_on_today] = useState(false);
     const [on_inbox, set_on_inbox] = useState(false);
+    const [on_done, set_on_done] = useState(false);
     const [on_project, set_on_project] = useState(false);
     const [project_id, set_project_id] = useState<string>();
     const [selected_project_id, set_selected_project_id] = useState<string>();
     const [edit_project_id, set_edit_project_id] = useState<string>();
     const [tasks_inbox_number, set_tasks_inbox_number] = useState<number>();
     const [tasks_today_number, set_tasks_today_number] = useState<number>();
+    const [done_number, set_done_number] = useState<number>();
     const [view_projects, set_view_projects] = useState<boolean>(true)
     const [open_project_menu, set_open_project_menu] = useState<boolean>(false);
 
-    const get_tasks_today_collection = query(collection(db, "tasks"), where("user_id", "==", user_data.token), where("due_date", "==", dayjs().format("DD-MM-YYYY")));
-    const get_tasks_inbox_collection = query(collection(db, "tasks"), where("user_id", "==", user_data.token));
+    const get_tasks_today_collection = query(collection(db, "tasks"), where("user_id", "==", user_data.token), where("due_date", "==", dayjs().format("DD-MM-YYYY")), where("is_done", "==", false));
+    const get_tasks_inbox_collection = query(collection(db, "tasks"), where("user_id", "==", user_data.token), where("is_done", "==", false));
+    const get_tasks_done_collection = query(collection(db, "tasks"), where("user_id", "==", user_data.token), where("is_done", "==", true));
 
     useEffect(() => {
         switch (location.pathname) {
@@ -38,11 +41,19 @@ export const useContainer = (): IFormModel => {
                 set_on_inbox(true);
                 set_on_today(false);
                 set_on_project(false);
+                set_on_done(false);
                 break;
             case app_routes.today_path:
                 set_on_inbox(false);
                 set_on_today(true);
                 set_on_project(false);
+                set_on_done(false);
+                break;
+            case app_routes.done_path:
+                set_on_inbox(false);
+                set_on_today(false);
+                set_on_project(false);
+                set_on_done(true);
                 break;
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -142,7 +153,8 @@ export const useContainer = (): IFormModel => {
             due_date: values.due_date?.format("DD-MM-YYYY"),
             priority: values.priority,
             user_id: user_data.token,
-            project_id: values.project_id
+            project_id: values.project_id,
+            is_done: false
         })
             .then(() => {
                 handler_close_task_modal();
@@ -226,6 +238,9 @@ export const useContainer = (): IFormModel => {
         navigate(app_routes.inbox_path);
     }
 
+    const goto_done = () => {
+        navigate(app_routes.done_path);
+    }
 
     onSnapshot(get_project_collection, (snapshot) => {
         const array = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })) as Array<{ id: string, color: string, project_title: string }>;
@@ -242,6 +257,11 @@ export const useContainer = (): IFormModel => {
         set_tasks_inbox_number(task_lists.length)
     })
 
+    onSnapshot(get_tasks_done_collection, (snapshot) => {
+        const task_lists = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
+        set_done_number(task_lists.length)
+    })
+
     const handler_project = (project_id: string) => {
         const path = generatePath(app_routes.project_path, { project_id });
         navigate(path);
@@ -249,6 +269,7 @@ export const useContainer = (): IFormModel => {
         set_on_project(true);
         set_on_inbox(false);
         set_on_today(false);
+        set_on_done(false);
     }
 
 
@@ -323,8 +344,10 @@ export const useContainer = (): IFormModel => {
         project_list,
         goto_today,
         goto_inbox,
+        goto_done,
         on_today,
         on_inbox,
+        on_done,
         tasks_inbox_number,
         tasks_today_number,
         handler_project,
@@ -335,6 +358,7 @@ export const useContainer = (): IFormModel => {
         open_project_menu,
         project_menu,
         selected_project_id: selected_project_id!,
-        handler_delete_project
+        handler_delete_project,
+        done_number: done_number!
     }
 }

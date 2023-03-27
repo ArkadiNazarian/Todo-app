@@ -10,7 +10,7 @@ export const View = (props: IFormModel) => (
             <form onSubmit={props.action_submit}>
                 <FormControl >
                     <TextField label="Email" helperText={props.form_errors.email} sx={{ marginTop: 2 }} error={!!props.form_errors.email} type="email" variant="standard" name="email" value={props.form_data.email} onChange={props.handleChange} onBlur={props.handleBlur} />
-                    <Button variant="contained" type="submit" sx={{ marginTop: 4 }}>Sign In</Button>
+                    <Button variant="contained" type="submit" sx={{ marginTop: 4 }}>Send Email</Button>
                 </FormControl>
             </form>
             <Typography variant="h6" sx={{ color: "#1976d2",marginTop:2 }}><Link to={props.login_path}>Go to login</Link></Typography>

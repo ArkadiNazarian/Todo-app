@@ -16,7 +16,7 @@ export const useContainer = (): IFormModel => {
 
     const user_data = useSelector(getAccountSelector);
 
-    const get_tasks_collection = query(collection(db, "tasks"), where("user_id", "==", user_data.token));
+    const get_tasks_collection = query(collection(db, "tasks"), where("user_id", "==", user_data.token),where("is_done","==",false));
     const get_projects_collection = query(collection(db, "project"), where("user_id", "==", user_data.token));
 
     const [task_list, set_task_list] = useState<Array<IGetTaskModel>>([]);
@@ -451,12 +451,8 @@ export const useContainer = (): IFormModel => {
 
     const action_done = (id: string, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         e.stopPropagation()
-        deleteDoc(doc(db, "tasks", id))
-            .catch((command_result) => {
-                toast.error(command_result.message, {
-                    position: toast.POSITION.TOP_RIGHT
-                })
-            })
+        const get_task_details = doc(db, "tasks", id);
+        updateDoc(get_task_details, { is_done: true })
     }
 
     const action_delete_task = (id: string) => {
