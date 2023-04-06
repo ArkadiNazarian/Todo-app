@@ -6,7 +6,7 @@ export interface IStoreModel {
 }
 
 const initialState: IStoreModel = {
-    sidebar_is_on: false
+    sidebar_is_on: true
 }
 
 

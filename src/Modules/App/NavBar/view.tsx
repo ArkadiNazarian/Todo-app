@@ -13,7 +13,7 @@ export const View = (props: IFormModel) => (
             <MenuIcon onClick={() => props.toggle_menu()} sx={{ ':hover': { cursor: "pointer", background: "#4e9cc5" }, marginLeft: "1rem", padding: 0.5, borderRadius: 1 }} />
             <HomeOutlinedIcon sx={{ ':hover': { cursor: "pointer", background: "#4e9cc5" }, marginLeft: "0.5rem", padding: 0.5, borderRadius: 1 }} onClick={() => props.home()} />
         </Box>
-        <Box sx={{ paddingRight: 3, position: "relative" }}>
+        <Box sx={{ paddingRight: 3, position: "relative", zIndex: 5 }}>
             <Avatar onClick={() => props.handler_onView_account()} sx={{ width: 34, height: 34, cursor: "pointer" }}>{props.avatar_name}</Avatar>
             {
                 props.view_account && <Paper onFocus={() => props.handler_onView_account()} elevation={7} sx={{ position: "absolute", background: "#ffffff", borderRadius: 3, width: "17rem", height: "7rem", right: 25, top: 40, padding: 2 }}>

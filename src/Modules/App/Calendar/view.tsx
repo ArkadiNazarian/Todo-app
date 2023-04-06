@@ -28,7 +28,7 @@ export const View = (props: IFormModel) => (
       editable={true}
       droppable={true}
       eventDrop={(e) => props.handler_onDrop_task(e.event?.start!,e.event._def.publicId)}
-      dateClick={(e) => console.log(e)}
+      // dateClick={(e) => console.log(e)}
     />
     <Modal open={props.open_task_modal} onClose={() => props.handler_close_task_modal()}>
       <Box sx={{ position: "absolute", top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 800, minHeight: "60%", borderRadius: 2, boxShadow: 24, p: 4, background: "#ffffff" }}>
